@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{D37F57D0-CB46-4962-9798-B2080DD6A47F}</ProjectGuid>
+    <ProjectGuid>{7F19C921-3D84-449D-AFE8-4C9F8DE45096}</ProjectGuid>
     <RootNamespace>MightAndMagic</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
