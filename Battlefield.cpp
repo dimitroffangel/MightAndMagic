@@ -1,5 +1,6 @@
 #include "Battlefield.h"
 #include "Drawing.h"
+#include <stdexcept>
 
 void Battlefield::DrawBattlefield()
 {

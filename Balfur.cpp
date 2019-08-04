@@ -1,6 +1,7 @@
 #include "Balfur.h"
 
 #include <time.h>
+#include <stdexcept>
 
 int Balfur::GenerateRandomNumber(int n)
 {

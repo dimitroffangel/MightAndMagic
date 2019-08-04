@@ -8,6 +8,7 @@
 #include "Squire.h"
 #include "Balfur.h"
 #include "Battlefield.h"
+#include <stdexcept>
 
 bool Engine::CanMovePlayer(const unsigned xAddition, const unsigned yAddition)
 {
