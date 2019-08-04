@@ -15,7 +15,7 @@ private:
 	const float startingValuesMana = 0;
 	const float startingValuesAgility = 12;
 	const float startingValuesAttack = 27;
-	// test asd
+	// test asdasdas
 	const float startingValuesShots = 0;
 	const float startingValuesArmor = 9;
 	const float startingValuesStealth = 0;
