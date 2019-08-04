@@ -18,6 +18,7 @@ void Battlefield::DrawBattlefield()
 
 				if (j % CenterRatio == 0 && j > 0)
 				{
+					//test
 					DrawingObject::DrawObject(DrawingObject::HConsole, "|", position, 0);
 					m_ObjectsDesignOnBattlefield[position.Y][position.X] = '|';
 				}
