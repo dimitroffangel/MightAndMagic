@@ -17,9 +17,8 @@ private:
 	const float startingValuesShots = 0;
 	const float startingValuesArmor = 12;
 	const float startingValuesStealth = 0;
-	// shadow test
 	const float startingValuesMovementOnBattlefield = 100;
-
+	
 public:
 	Dragon();
 	~Dragon();
