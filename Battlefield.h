@@ -25,6 +25,7 @@ private:
 	int GetPosition(const Hero*, COORD position) const;
 	void DrawBattalion(COORD positionCreature, const char* creatureSymbol, const char* stringNumber);
 	bool TryKillingBattalion(Creature* &creature, Hero* owner, size_t battalionIndex);
+	void TryMovingCreature(Hero* attackerHero, Hero* defenderHero, size_t commanderOneBattalionIndex, size_t commanderTwoBattalionIndex);
 	void UpdateBattalionAfterFight(Creature* creature, Hero* owner, size_t battalionIndex);
 
 	Hero& FindHero(const std::string tag);

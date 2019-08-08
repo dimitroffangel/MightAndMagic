@@ -18,7 +18,6 @@ void Battlefield::DrawBattlefield()
 
 				if (j % CenterRatio == 0 && j > 0)
 				{
-					//test
 					DrawingObject::DrawObject(DrawingObject::HConsole, "|", position, 0);
 					m_ObjectsDesignOnBattlefield[position.Y][position.X] = '|';
 				}
@@ -199,53 +198,9 @@ void Battlefield::MoveCreature(COORD from, COORD to, bool isPlayerOne)
 	// else there is a fight ahead
 
 	if (isPlayerOne)
-	{
-		Creature* attacker = &m_Commander_One->PeekUnit(commanderOneBattalionIndex);
-		Creature* defender = &m_Commander_Two->PeekUnit(commanderTwoBattalionIndex);
-		size_t attackerBattalionLength = m_Commander_One->GetNumberOfSoldiersInBattalion(commanderOneBattalionIndex);
-
-		// while defender's health is bigger than zero and there are left defenders
-		for (size_t i = 0; i < attackerBattalionLength; i++)
-		{
-			attacker->Attack(*defender);
-			defender->Defend(*attacker);
-			
-			if (TryKillingBattalion(defender, m_Commander_Two, commanderTwoBattalionIndex))
-			{
-				if (!TryKillingBattalion(attacker, m_Commander_One, commanderOneBattalionIndex))
-					UpdateBattalionAfterFight(attacker, m_Commander_One, commanderOneBattalionIndex);
-				
-				return;
-			}
-
-			if (TryKillingBattalion(attacker, m_Commander_One, commanderOneBattalionIndex))
-			{
-				if (!TryKillingBattalion(defender, m_Commander_Two, commanderTwoBattalionIndex))
-					UpdateBattalionAfterFight(defender, m_Commander_Two, commanderTwoBattalionIndex);
-				
-				return;
-			}
-		}
-
-		// if no one of the two were killed re-draw the battalion number
-		 
-		// draw defender...
-		char creatureSymbol[2];
-		creatureSymbol[0] = defender->GetSymbol();
-		creatureSymbol[1] = '\0';
-		DrawBattalion(defender->GetPosition(), creatureSymbol, NumberToString(m_Commander_Two->GetNumberOfSoldiersInBattalion(commanderTwoBattalionIndex)).c_str());
-
-		creatureSymbol[0] = attacker->GetSymbol();
-		DrawBattalion(attacker->GetPosition(), creatureSymbol, NumberToString(m_Commander_One->GetNumberOfSoldiersInBattalion(commanderOneBattalionIndex)).c_str());
-	}
-
+		TryMovingCreature(m_Commander_One, m_Commander_Two, commanderOneBattalionIndex, commanderTwoBattalionIndex);
 	else
-	{
-		Creature& attacker = m_Commander_One->PeekUnit(commanderOneBattalionIndex);
-		Creature& defender = m_Commander_Two->PeekUnit(commanderTwoBattalionIndex);
-		attacker.Attack(defender);
-		defender.Defend(attacker);
-	}
+		TryMovingCreature(m_Commander_Two, m_Commander_One, commanderOneBattalionIndex, commanderTwoBattalionIndex);
 
 }
 
@@ -384,6 +339,50 @@ bool Battlefield::TryKillingBattalion(Creature* &creature, Hero * owner, size_t 
 	creature->SetLocation(creaturePosition.X, creaturePosition.Y);
 
 	return false;
+}
+
+void Battlefield::TryMovingCreature(Hero* attackerHero, Hero* defenderHero, size_t commanderOneBattalionIndex, size_t commanderTwoBattalionIndex)
+{
+	Creature* attacker = &attackerHero->PeekUnit(commanderOneBattalionIndex);
+	Creature* defender = &defenderHero->PeekUnit(commanderTwoBattalionIndex);
+	size_t attackerBattalionLength = attackerHero->GetNumberOfSoldiersInBattalion(commanderOneBattalionIndex);
+
+	// while defender's health is bigger than zero and there are left defenders
+	for (size_t i = 0; i < attackerBattalionLength; i++)
+	{
+		attacker->Attack(*defender);
+		defender->Defend(*attacker);
+
+		if (TryKillingBattalion(defender, defenderHero, commanderTwoBattalionIndex))
+		{
+			if (!TryKillingBattalion(attacker, attackerHero, commanderOneBattalionIndex))
+				UpdateBattalionAfterFight(attacker, attackerHero, commanderOneBattalionIndex);
+
+			return;
+		}
+
+		if (TryKillingBattalion(attacker, attackerHero, commanderOneBattalionIndex))
+		{
+			if (!TryKillingBattalion(defender, defenderHero, commanderTwoBattalionIndex))
+				UpdateBattalionAfterFight(defender, defenderHero, commanderTwoBattalionIndex);
+
+			return;
+		}
+	}
+
+	// if no one of the two were killed re-draw the battalion number
+
+	// draw defender...
+	char creatureSymbol[2];
+	creatureSymbol[0] = defender->GetSymbol();
+	creatureSymbol[1] = '\0';
+	DrawBattalion(defender->GetPosition(), creatureSymbol,
+		NumberToString(defenderHero->GetNumberOfSoldiersInBattalion(commanderTwoBattalionIndex)).c_str());
+
+	creatureSymbol[0] = attacker->GetSymbol();
+	DrawBattalion(attacker->GetPosition(), creatureSymbol,
+		NumberToString(attackerHero->GetNumberOfSoldiersInBattalion(commanderOneBattalionIndex)).c_str());
+
 }
 
 void Battlefield::UpdateBattalionAfterFight(Creature* creature, Hero * owner, size_t battalionIndex)
