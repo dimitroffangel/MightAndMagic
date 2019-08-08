@@ -18,6 +18,7 @@ private:
 	std::vector<HeroHandler> m_HeroesOnBattlefield;
 	Hero* m_Commander_One;
 	Hero* m_Commander_Two;
+	bool m_IsBattleOver;
 
 	std::string NumberToString(unsigned number) const;
 	void DrawCommanderArmy(Hero* commander, size_t y);
@@ -33,6 +34,7 @@ private:
 public:
 	Battlefield(Hero* commanderOne, Hero* commanderTwo);
 	void DrawBattlefield();
+	void ClearBattlefield();
 	void SwapCreatures(COORD from, COORD to, bool canActivatePassive);
 	void MoveCreature(COORD from, COORD to, bool isPlayerOne);
 
@@ -59,6 +61,16 @@ public:
 	unsigned GetMoveableFieldOffset() const
 	{
 		return MoveableFieldOffset;
+	}
+
+	bool IsBattleOver() const
+	{
+		return m_IsBattleOver;
+	}
+
+	void ForfeitBattle()
+	{
+		m_IsBattleOver = true;
 	}
 };
 

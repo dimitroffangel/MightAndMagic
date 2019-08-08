@@ -311,6 +311,50 @@ void Engine::WaitForKeyPress(CurrentTime& start)
 		m_CurrentMap->UpdateChanges();
 	}
 
+	if ((GetKeyState('R') & 0x8000) && isInBattle)
+	{
+		m_Battle->ForfeitBattle();
+
+		// now redraw the map
+		isInBattle = false;
+		//WipeMap();
+
+		m_Battle.release();
+
+		//m_Battle->DrawBattlefield();
+		m_Battle->ClearBattlefield();
+		
+
+		unsigned battleWidth = m_Battle.get()->GetWidth();
+		unsigned battleHeight = m_Battle.get()->GetHeight();
+		unsigned battleGetRatio = m_Battle.get()->GetCenterRatio();
+		unsigned moveableFieldOffeset = m_Battle.get()->GetMoveableFieldOffset();
+
+		Hero& hero = m_CurrentMap->FindHero("Player");
+		COORD position = hero.GetPosition();
+
+		position.Y = battleHeight - moveableFieldOffeset;
+		position.X = battleGetRatio;
+
+		DrawingObject::DrawObject(DrawingObject::HConsole, "<", position, 0);
+
+		// move the object
+		hero.MoveOnTurn(position.X, position.Y);
+
+		ClearAllMessages();
+		// add a new Message
+		const char* message = " You can swap positions of your battalions, when yer' ready press Y";
+		AddMessage(message);
+
+		/*
+			1) instantiate a new battlefield, there everything will be drawn
+			2) set isInBattle to true
+
+		*/
+
+
+	}
+
 	return;
 }
 

@@ -55,6 +55,23 @@ void Battlefield::DrawBattlefield()
 	DrawArmy();
 }
 
+void Battlefield::ClearBattlefield()
+{
+	COORD position;
+
+	for (size_t y = 0; y < MAX_HEIGHT; y++)
+	{
+		position.Y = y;
+		for (size_t x = 0; x < MAX_WIDTH; x++)
+		{
+			position.X = x;
+			DrawingObject::DrawObject(DrawingObject::HConsole, " ", position, 0);
+		}
+	}
+
+	//DrawArmy();
+}
+
 void Battlefield::SwapCreatures(COORD from, COORD to, bool canActivatePassive)
 {
 	const unsigned maxStrayFromHero = 6;
@@ -201,7 +218,6 @@ void Battlefield::MoveCreature(COORD from, COORD to, bool isPlayerOne)
 		TryMovingCreature(m_Commander_One, m_Commander_Two, commanderOneBattalionIndex, commanderTwoBattalionIndex);
 	else
 		TryMovingCreature(m_Commander_Two, m_Commander_One, commanderOneBattalionIndex, commanderTwoBattalionIndex);
-
 }
 
 
@@ -382,7 +398,6 @@ void Battlefield::TryMovingCreature(Hero* attackerHero, Hero* defenderHero, size
 	creatureSymbol[0] = attacker->GetSymbol();
 	DrawBattalion(attacker->GetPosition(), creatureSymbol,
 		NumberToString(attackerHero->GetNumberOfSoldiersInBattalion(commanderOneBattalionIndex)).c_str());
-
 }
 
 void Battlefield::UpdateBattalionAfterFight(Creature* creature, Hero * owner, size_t battalionIndex)
@@ -408,8 +423,9 @@ Hero & Battlefield::FindHero(const std::string tag)
 }
 
 Battlefield::Battlefield(Hero * commanderOne, Hero * commanderTwo)
-	:m_Commander_One(commanderOne),
-	m_Commander_Two(commanderTwo)
+	:m_Commander_One(commanderOne), 
+	m_Commander_Two(commanderTwo),
+	m_IsBattleOver(false)
 {
 
 	// fill the map with blank spots
