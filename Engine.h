@@ -25,6 +25,7 @@ private:
 	bool canSwapUnits;
 	bool canMoveUnits;
 	bool hasMarkedUnit;
+	COORD m_HeroPositionBeforeBattle;
 	COORD m_MarkedField;
 
 private:
