@@ -319,12 +319,9 @@ void Engine::WaitForKeyPress(CurrentTime& start)
 		isInBattle = false;
 		//WipeMap();
 
-		m_Battle.release();
-
 		//m_Battle->DrawBattlefield();
 		m_Battle->ClearBattlefield();
 		
-
 		unsigned battleWidth = m_Battle.get()->GetWidth();
 		unsigned battleHeight = m_Battle.get()->GetHeight();
 		unsigned battleGetRatio = m_Battle.get()->GetCenterRatio();
