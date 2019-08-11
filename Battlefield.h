@@ -28,6 +28,7 @@ private:
 	bool TryKillingBattalion(Creature* &creature, Hero* owner, size_t battalionIndex);
 	void TryMovingCreature(Hero* attackerHero, Hero* defenderHero, size_t commanderOneBattalionIndex, size_t commanderTwoBattalionIndex);
 	void UpdateBattalionAfterFight(Creature* creature, Hero* owner, size_t battalionIndex);
+	void TryEndingBattle();
 
 	Hero& FindHero(const std::string tag);
 

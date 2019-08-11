@@ -5,7 +5,7 @@
 Hero::Hero(const std::string tag, const unsigned x, const unsigned y, bool isStatic, const char symbol
 	, unsigned movesOnTurn) : Creature(tag, x, y, isStatic, symbol)
 {
-	m_Army = std::vector<std::vector <CreatureHandler> >(BattalionsNumber, std::vector<CreatureHandler>());
+	m_Army = std::vector<std::vector <CreatureHandler> >(BattalionsSize, std::vector<CreatureHandler>());
 	m_LeftMoves = movesOnTurn;
 	m_MovesOnTurn = movesOnTurn;
 	m_BattalionsLength = 0;

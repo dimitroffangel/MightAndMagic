@@ -249,7 +249,7 @@ void Battlefield::DrawCommanderArmy(Hero* commander, size_t y)
 	positionCreature.Y = y;
 	size_t currentBattalionSize;
 
-	for (size_t i = 1; i <= commander->GetBattalionNumber(); i++)
+	for (size_t i = 1; i <= commander->GetNumberOfBattalions(); i++)
 	{
 		currentBattalionSize = commander->GetNumberOfSoldiersInBattalion(i - 1);
 
@@ -408,6 +408,11 @@ void Battlefield::UpdateBattalionAfterFight(Creature* creature, Hero * owner, si
 
 	DrawBattalion(creature->GetPosition(), creatureSymbol,
 		NumberToString(owner->GetNumberOfSoldiersInBattalion(battalionIndex)).c_str());
+}
+
+void Battlefield::TryEndingBattle()
+{
+
 }
 	
 Hero & Battlefield::FindHero(const std::string tag)

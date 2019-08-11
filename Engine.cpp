@@ -338,7 +338,6 @@ void Engine::WaitForKeyPress(CurrentTime& start)
 		/*
 			1) instantiate a new battlefield, there everything will be drawn
 			2) set isInBattle to true
-
 		*/
 	}
 
@@ -451,7 +450,7 @@ void Engine::TakeRandomCreatureFromArmy(Hero & heroArmy)
 
 	size_t battalionIndex = -1;
 
-	while (battalionIndex < 0 || battalionIndex >= heroArmy.GetBattalionNumber())
+	while (battalionIndex < 0 || battalionIndex >= heroArmy.GetNumberOfBattalions())
 		battalionIndex = GenerateRandomNumber(8);
 
 	heroArmy.RemoveUnit(soldierIndexToDie, battalionIndex);

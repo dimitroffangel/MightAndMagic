@@ -13,7 +13,7 @@ typedef std::vector< std::vector<CreatureHandler> > Army;
 class Hero : public Creature
 {
 private:
-	const size_t BattalionsNumber = 8;
+	const size_t BattalionsSize = 8;
 	size_t m_BattalionsLength;
 	const float LevelTwoNeededExp = 1000;
 
@@ -49,9 +49,9 @@ public:
 		return m_Level;
 	}
 
-	const size_t GetBattalionNumber() const
+	const size_t GetNumberOfBattalions() const
 	{
-		return BattalionsNumber;
+		return BattalionsSize;
 	}
 
 	size_t GetBattalionLength() const
