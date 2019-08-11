@@ -326,9 +326,12 @@ void Engine::WaitForKeyPress(CurrentTime& start)
 		Hero& hero = m_CurrentMap->FindHero("Player");
 		COORD position = hero.GetPosition();
 
-		position = m_HeroPositionBeforeBattle;
+		hero.SetLocation(m_HeroPositionBeforeBattle.X, m_HeroPositionBeforeBattle.Y);
 
 		DrawingObject::DrawObject(DrawingObject::HConsole, "<", position, 0);
+
+		// draw objects
+		DrawingObject::DrawMap(*m_CurrentMap);
 
 		ClearAllMessages();
 		
@@ -337,8 +340,6 @@ void Engine::WaitForKeyPress(CurrentTime& start)
 			2) set isInBattle to true
 
 		*/
-
-
 	}
 
 	return;
