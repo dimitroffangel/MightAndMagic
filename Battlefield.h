@@ -64,6 +64,16 @@ public:
 		return MoveableFieldOffset;
 	}
 
+	const Hero* GetAttacker() const
+	{
+		return m_Commander_One;
+	}
+
+	const Hero* GetDefender() const
+	{
+		return m_Commander_Two;
+	}
+
 	bool IsBattleOver() const
 	{
 		return m_IsBattleOver;

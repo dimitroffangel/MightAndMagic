@@ -421,6 +421,16 @@ void Engine::AfterBattleLogic()
 {
 	m_Battle->ForfeitBattle();
 
+	const Hero* attacker = m_Battle->GetAttacker();
+
+	if (attacker->GetNumberOfSoldiers() == 0)
+		m_CurrentMap->RemoveHero(attacker->GetTagName());
+
+	const Hero* defender = m_Battle->GetDefender();
+
+	if (defender->GetNumberOfSoldiers() == 0)
+		m_CurrentMap->RemoveHero(defender->GetTagName());
+
 	// now redraw the map
 	isInBattle = false;
 	//WipeMap();
@@ -546,7 +556,6 @@ void Engine::BeforeStartingGame()
 
 	for (size_t i = 0; i < 5; i++)
 		player.AddUnit(Squire(), 2);
-
 
 	Resource resourceMinerals("Resource-Minerals", 2, 2, true, '*', "Minerals", 100);
 	Resource resourceWoods("Resource-Woods", 4, 4, true, 'W', "Woods", 120);
