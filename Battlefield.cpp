@@ -336,6 +336,8 @@ bool Battlefield::TryKillingBattalion(Creature* &creature, Hero * owner, size_t 
 	if (creature->GetHealth() > 0)
 		return false;
 
+	TryEndingBattle();
+
 	COORD creaturePosition = creature->GetPosition();
 
 	if (owner->GetNumberOfSoldiersInBattalion(battalionIndex) == 1)
@@ -412,7 +414,17 @@ void Battlefield::UpdateBattalionAfterFight(Creature* creature, Hero * owner, si
 
 void Battlefield::TryEndingBattle()
 {
+	// ::TODO
 
+	if (m_Commander_One->GetNumberOfSoldiers() == 0)
+	{
+		m_IsBattleOver = true;
+	}
+
+	else if (m_Commander_Two->GetNumberOfSoldiers() == 0)
+	{
+		m_IsBattleOver = true;
+	}
 }
 	
 Hero & Battlefield::FindHero(const std::string tag)

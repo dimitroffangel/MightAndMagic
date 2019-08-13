@@ -17,11 +17,13 @@ private:
 	size_t m_BattalionsLength;
 	const float LevelTwoNeededExp = 1000;
 
+	typedef std::vector < std::vector <CreatureHandler>> Army;
+
 
 protected:
 	unsigned m_MovesOnTurn;
 	unsigned m_LeftMoves;
-	std::vector< std::vector <CreatureHandler> > m_Army;
+	Army m_Army;
 	std::vector<Resource> m_Resources;
 
 public:

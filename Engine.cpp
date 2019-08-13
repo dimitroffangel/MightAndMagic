@@ -219,6 +219,9 @@ void Engine::TryPressingEnter(CurrentTime& start)
 		m_Battle.get()->SwapCreatures(m_MarkedField, newMarkedField, false);
 	if (canMoveUnits)
 		m_Battle.get()->MoveCreature(m_MarkedField, newMarkedField, true);
+	
+	if (m_Battle->IsBattleOver())
+		AfterBattleLogic();
 
 	hasMarkedUnit = false;
 }
@@ -313,33 +316,7 @@ void Engine::WaitForKeyPress(CurrentTime& start)
 	}
 
 	if ((GetKeyState('R') & 0x8000) && isInBattle)
-	{
-		m_Battle->ForfeitBattle();
-
-		// now redraw the map
-		isInBattle = false;
-		//WipeMap();
-
-		//m_Battle->DrawBattlefield();
-		m_Battle->ClearBattlefield();
-		
-		Hero& hero = m_CurrentMap->FindHero("Player");
-		COORD position = hero.GetPosition();
-
-		hero.SetLocation(m_HeroPositionBeforeBattle.X, m_HeroPositionBeforeBattle.Y);
-
-		DrawingObject::DrawObject(DrawingObject::HConsole, "<", position, 0);
-
-		// draw objects
-		DrawingObject::DrawMap(*m_CurrentMap);
-
-		ClearAllMessages();
-		
-		/*
-			1) instantiate a new battlefield, there everything will be drawn
-			2) set isInBattle to true
-		*/
-	}
+		AfterBattleLogic();
 
 	return;
 }
@@ -438,6 +415,35 @@ void Engine::BattleHeroes_QuickSimulation_RandomCasualties(Hero & attacker, Hero
 		TakeRandomCreatureFromArmy(defender);
 		defenderCasualties--;
 	}
+}
+
+void Engine::AfterBattleLogic()
+{
+	m_Battle->ForfeitBattle();
+
+	// now redraw the map
+	isInBattle = false;
+	//WipeMap();
+
+	//m_Battle->DrawBattlefield();
+	m_Battle->ClearBattlefield();
+
+	Hero& hero = m_CurrentMap->FindHero("Player");
+	COORD position = hero.GetPosition();
+
+	hero.SetLocation(m_HeroPositionBeforeBattle.X, m_HeroPositionBeforeBattle.Y);
+
+	DrawingObject::DrawObject(DrawingObject::HConsole, "<", position, 0);
+
+	// draw objects
+	DrawingObject::DrawMap(*m_CurrentMap);
+
+	ClearAllMessages();
+
+	/*
+		1) instantiate a new battlefield, there everything will be drawn
+		2) set isInBattle to true
+	*/
 }
 
 void Engine::TakeRandomCreatureFromArmy(Hero & heroArmy)
@@ -545,7 +551,7 @@ void Engine::BeforeStartingGame()
 		enemy.AddUnit(Angel(), 0);
 
 
-	for (size_t i = 0; i < 1776; i++)
+	for (size_t i = 0; i < 0; i++)
 		enemy.AddUnit(Squire(), 1);
 
 

@@ -43,6 +43,7 @@ private:
 	void BattleHeroes_QuickSimulation(Hero& attacker, Hero& defender);
 	void BattleHeroes_QuickSimulation_RandomCasualties(Hero& attacker, Hero& defender, 
 														int randomAttackerTaker, int randomDefenderTaker);
+	void AfterBattleLogic();
 	void TakeRandomCreatureFromArmy(Hero& heroArmy);
 	int GenerateRandomNumber(int n) const;
 	void BeforeBattleLogic(Hero&, Hero&);

@@ -99,7 +99,12 @@ size_t Hero::GetNumberOfSoldiersInBattalion(size_t indexBattalion) const
 
 size_t Hero::GetNumberOfSoldiers() const
 {
-	return m_Army.size();
+	size_t numberOfSoliders = 0;
+
+	for (size_t i = 0; i < m_Army.size(); i++)
+		numberOfSoliders += m_Army[i].size();
+
+	return numberOfSoliders;
 }
 
 char Hero::GetBattalionSymbol(size_t indexBattalion) const
