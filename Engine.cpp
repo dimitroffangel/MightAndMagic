@@ -253,7 +253,7 @@ void Engine::WaitForKeyPress(CurrentTime& start)
 		return;
 	}
 
-	if (m_IsWaitingConfirmation && (GetKeyState('Y') && 0x8000))
+	if (m_IsWaitingConfirmation && (GetKeyState('Y') & 0x8000))
 	{
 		m_IsWaitingConfirmation = false;
 		isInBattle = true;
@@ -427,6 +427,7 @@ void Engine::AfterBattleLogic()
 
 	//m_Battle->DrawBattlefield();
 	m_Battle->ClearBattlefield();
+	m_Battle.reset();
 
 	Hero& hero = m_CurrentMap->FindHero("Player");
 	COORD position = hero.GetPosition();
@@ -549,11 +550,9 @@ void Engine::BeforeStartingGame()
 	// just a test...
 	for (size_t i = 0; i < 2; i++)
 		enemy.AddUnit(Angel(), 0);
-
-
+/*
 	for (size_t i = 0; i < 0; i++)
-		enemy.AddUnit(Squire(), 1);
-
+		enemy.AddUnit(Squire(), 1);*/
 
 	m_CurrentMap->AddHero(player);
 	m_CurrentMap->AddResource(resourceMinerals);
