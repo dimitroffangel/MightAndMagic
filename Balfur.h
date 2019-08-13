@@ -8,7 +8,7 @@ class Balfur : public Demon, public Dragon
 {
 private:
 	const char startingValuesSymbol = 'B';
-	const float startingValuesLevel = 1;
+	const unsigned startingValuesLevel = 1;
 	const float startingValuesExperience = 0;
 	const float startingValuesExperienceGives = 200;
 	const float startingValuesPowerRating = 4666;
@@ -19,7 +19,7 @@ private:
 	const float startingValuesShots = 0;
 	const float startingValuesArmor = 10;
 	const float startingValuesStealth = 0;
-	const float startingValuesMovementOnBattlefield = 5;
+	const unsigned startingValuesMovementOnBattlefield = 5;
 
 	int GenerateRandomNumber(int n);
 

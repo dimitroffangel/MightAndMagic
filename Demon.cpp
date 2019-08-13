@@ -45,7 +45,7 @@ void Demon::PassTurn()
 
 void Demon::Attack(Creature& enemy)
 {
-	enemy.TakeDamage(m_PowerRating * m_Attack * 0.001);
+	enemy.TakeDamage(m_PowerRating * m_Attack * 0.001f);
 }
 
 void Demon::Defend(Creature & enemy)

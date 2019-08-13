@@ -8,7 +8,7 @@ class Squire : public Creature
 private:
 	//1, 0, 4, 41, 3, 0, 0, 1, 0, 1, 0, 3
 	const char startingValuesSymbol = 'S';
-	const float startingValuesLevel = 1;
+	const unsigned startingValuesLevel = 1;
 	const float startingValuesExperience = 0;
 	const float startingValuesExperienceGives = 4;
 	const float startingValuesPowerRating = 41;
@@ -19,7 +19,7 @@ private:
 	const float startingValuesShots = 0;
 	const float startingValuesArmor = 1;
 	const float startingValuesStealth = 0;
-	const float startingValuesMovementOnBattlefield = 10;
+	const unsigned startingValuesMovementOnBattlefield = 10;
 
 public:
 	Squire();

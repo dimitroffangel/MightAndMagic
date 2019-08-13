@@ -62,6 +62,8 @@ Hero& Map::FindHero(const std::string tag)
 		if (it->GetTagName() == tag)
 			return it->GetHero();
 	}
+
+	throw std::range_error("A hero with such a tag is not found....");
 }
 
 std::string Map::TryPlayerGettingResource(const char * playerTagName)

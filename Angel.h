@@ -7,7 +7,7 @@ class Angel : public Creature
 {
 private:
 	const char startingValuesSymbol = 'A';
-	const float startingValuesLevel = 1;
+	const unsigned startingValuesLevel = 1;
 	const float startingValuesExperience = 0;
 	const float startingValuesExperienceGives = 212;
 	const float startingValuesPowerRating = 4866;
@@ -18,7 +18,7 @@ private:
 	const float startingValuesShots = 0;
 	const float startingValuesArmor = 9;
 	const float startingValuesStealth = 0;
-	const float startingValuesMovementOnBattlefield = 100;
+	const unsigned startingValuesMovementOnBattlefield = 100;
 
 public:
 	Angel();

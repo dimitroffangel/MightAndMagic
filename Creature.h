@@ -7,7 +7,7 @@ class Creature : public GameObject
 {
 protected:
 	char m_Symbol;
-	float m_Level;
+	unsigned m_Level;
 	float m_Experience;
 	float m_ExperienceGives;
 	float m_PowerRating;
@@ -18,7 +18,7 @@ protected:
 	float m_Shots;
 	float m_Armor;
 	float m_Stealth;
-	int m_MovementOnBattlefield;
+	unsigned m_MovementOnBattlefield;
 	bool m_IsDead;
 	bool m_HasPassedTurn;
 	// inventory

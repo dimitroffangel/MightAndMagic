@@ -44,7 +44,7 @@ void Dragon::PassTurn()
 
 void Dragon::Attack(Creature& enemy)
 {
-	enemy.TakeDamage(m_Attack *m_PowerRating*0.016 + m_Agility*0.07);
+	enemy.TakeDamage(m_Attack *m_PowerRating*0.016f + m_Agility*0.07f);
 }
 
 void Dragon::Defend(Creature & enemy)

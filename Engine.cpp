@@ -29,7 +29,7 @@ void Engine::ClearAllMessages()
 		size_t sizeString = std::strlen(it->GetAlert());
 		std::unique_ptr<char> blankString(new char[std::strlen(it->GetAlert()) + 1]);
 		
-		for (int i = 0; i < sizeString; i++)
+		for (size_t i = 0; i < sizeString; i++)
 			blankString.get()[i] = ' ';
 		blankString.get()[sizeString] = '\0';
 
@@ -60,7 +60,7 @@ void Engine::ClearTimesUpMessages()
 			
 			std::unique_ptr<char> blankString(new char[std::strlen(it->GetAlert()) + 1]);
 
-			for (int i = 0; i < sizeString; i++)
+			for (size_t i = 0; i < sizeString; i++)
 				blankString.get()[i] = ' ';
 			blankString.get()[sizeString] = '\0';
 
@@ -236,7 +236,7 @@ void Engine::WaitForKeyPress(CurrentTime& start)
 
 		if (m_AboutToDefend->GetNumberOfSoldiers() == 0)
 		{
-			m_AboutToAttack->SalvageExp(m_AboutToDefend->GetLevel());
+			m_AboutToAttack->SalvageExp(m_AboutToDefend->GetLevel() * 1.f);
 			m_CurrentMap->RemoveHero(m_AboutToDefend->GetTagName());
 			// get exp from the enemy
 		}
@@ -400,8 +400,8 @@ void Engine::BattleHeroes_QuickSimulation(Hero& attacker, Hero& defender)
 void Engine::BattleHeroes_QuickSimulation_RandomCasualties(Hero & attacker, Hero & defender, 
 	int randomAttackerTaker, int randomDefenderTaker)
 {
-	unsigned attackerCasualties = (attacker.GetNumberOfSoldiers() * (randomAttackerTaker / 10.0f));
-	unsigned defenderCasualties = (defender.GetNumberOfSoldiers() * (randomDefenderTaker/ 10.0f));
+	unsigned attackerCasualties = static_cast<unsigned>(attacker.GetNumberOfSoldiers() * (randomAttackerTaker / 10.0f));
+	unsigned defenderCasualties = static_cast<unsigned>(defender.GetNumberOfSoldiers() * (randomDefenderTaker/ 10.0f));
 
 	while (attackerCasualties > 0)
 	{
@@ -496,6 +496,9 @@ void Engine::WipeMap()
 }
 
 Engine::Engine(unsigned width, unsigned height)
+	:canMoveUnits(false), canSwapUnits(false), hasMarkedUnit(false),
+	isInBattle(false), isPlayerDead(false), m_AboutToAttack(nullptr), m_AboutToDefend(nullptr), m_HeroPositionBeforeBattle(),
+	m_IsWaitingConfirmation(false), m_MarkedField()
 {
 	m_CurrentMap = new Map(width, height);
 	m_LoadedMaps.push_back(*m_CurrentMap);
@@ -503,6 +506,9 @@ Engine::Engine(unsigned width, unsigned height)
 }
 
 Engine::Engine(const Map & map)
+	:canMoveUnits(false), canSwapUnits(false), hasMarkedUnit(false),
+	isInBattle(false), isPlayerDead(false), m_AboutToAttack(nullptr), m_AboutToDefend(nullptr), m_HeroPositionBeforeBattle(),
+	m_IsWaitingConfirmation(false), m_MarkedField()
 {
 	m_CurrentMap = new Map(map);
 	m_LoadedMaps.push_back(*m_CurrentMap);
@@ -516,7 +522,7 @@ Engine::~Engine()
 void Engine::BeforeStartingGame()
 {
 	// set srand
-	std::srand(time(NULL));
+	std::srand(static_cast<unsigned>(time(NULL)));
 
 	//// set the console writing mechaninishm
 	DrawingObject::HConsole = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
