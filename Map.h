@@ -18,11 +18,13 @@ public:
 	Map();
 	Map(const unsigned mapWidth, const unsigned mapHeight);
 	
+	void UpdateHero(const Hero& hero, COORD newPosition, char heroSymbol);
 	void UpdateChanges(); // TODO the bot logic...
 	void AddResource(const Resource& resource);
 	void AddHero(const Hero& hero);
 	void RemoveHero(const std::string tag);
-	Hero& FindHero(const std::string tag);
+	bool IsHeroOn(COORD position) const;
+	Hero& FindHero(const std::string tag) const;
 	std::string TryPlayerGettingResource(const char* playerTagName);
 	const unsigned GetMapWidth() const
 	{

@@ -17,6 +17,13 @@ Map::Map(const unsigned mapWidth, const unsigned mapHeight) : m_MapWidth(mapWidt
 	m_ObjectsDesignOnMap = vectorString(mapHeight, row);
 }
 
+void Map::UpdateHero(const Hero& hero, COORD newPosition, char heroSymbol)
+{
+	COORD heroPosition = hero.GetPosition();
+	m_ObjectsDesignOnMap[heroPosition.Y][heroPosition.X] = '_';
+	m_ObjectsDesignOnMap[newPosition.Y][newPosition.X] = heroSymbol;
+}
+
 void Map::UpdateChanges()
 {
 	// give turn to the bots TODO
@@ -53,11 +60,26 @@ void Map::RemoveHero(const std::string tag)
 	}
 }
 
-Hero& Map::FindHero(const std::string tag)
+bool Map::IsHeroOn(COORD position) const
+{
+	COORD currentPosition;
+
+	for (std::vector<HeroHandler>::const_iterator it = m_HeroesOnMap.cbegin(); it != m_HeroesOnMap.cend(); it++)
+	{
+		currentPosition = it->GetHero().GetPosition();
+
+		if (currentPosition.X == position.X && currentPosition.Y == position.Y)
+			return true;
+	}
+
+	return false;
+}
+
+Hero& Map::FindHero(const std::string tag) const
 {
 	// TODO: insert return statement here
 
-	for (std::vector<HeroHandler>::iterator it = m_HeroesOnMap.begin(); it != m_HeroesOnMap.end(); it++)
+	for (std::vector<HeroHandler>::const_iterator it = m_HeroesOnMap.cbegin(); it != m_HeroesOnMap.cend(); it++)
 	{
 		if (it->GetTagName() == tag)
 			return it->GetHero();

@@ -124,7 +124,7 @@ void Engine::MovePlayer(const char * playerTag, int moveX, int moveY,const char*
 	position.X += moveX;
 	position.Y += moveY;
 
-	if (!m_Battle) // if it is not in battle check if the player is about to enter a battle...
+	if (!m_Battle && m_CurrentMap->IsHeroOn(position)) // if it is not in battle check if the player is about to enter a battle...
 	{
 		Hero& enemyHero = m_CurrentMap->FindHero("EnemyHero");
 		const COORD enemyPosition = enemyHero.GetPosition();
@@ -136,10 +136,13 @@ void Engine::MovePlayer(const char * playerTag, int moveX, int moveY,const char*
 		}
 	}
 
+	if(!m_Battle)
+		m_CurrentMap->UpdateHero(hero, position, playerSymbol[0]);
+
 	// clear the drawing and add the new one
 	DrawingObject::DrawObject(DrawingObject::HConsole, leftSymbol, hero.GetPosition(), 0);
 	DrawingObject::DrawObject(DrawingObject::HConsole, playerSymbol, position, 0);
-	
+
 	if (!m_Battle)
 		hero.MoveOnTurn(position.X, position.Y);
 	else
@@ -424,12 +427,20 @@ void Engine::AfterBattleLogic()
 	const Hero* attacker = m_Battle->GetAttacker();
 
 	if (attacker->GetNumberOfSoldiers() == 0)
+	{
+		DrawingObject::DrawObject(DrawingObject::HConsole, " ", attacker->GetPosition(), 0);
+		m_CurrentMap->UpdateHero(*attacker, attacker->GetPosition(), '_');
 		m_CurrentMap->RemoveHero(attacker->GetTagName());
+	}
 
 	const Hero* defender = m_Battle->GetDefender();
 
 	if (defender->GetNumberOfSoldiers() == 0)
+	{
+		DrawingObject::DrawObject(DrawingObject::HConsole, " ", defender->GetPosition(), 0);
+		m_CurrentMap->UpdateHero(*defender, defender->GetPosition(), '_');
 		m_CurrentMap->RemoveHero(defender->GetTagName());
+	}
 
 	// now redraw the map
 	isInBattle = false;
