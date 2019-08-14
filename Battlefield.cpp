@@ -516,6 +516,7 @@ void Battlefield::FindBFS(Creature* warrior, COORD targetPosition, COORD fromPos
 
 	// add the new route
 	warrior->AddLocationToRoad(nearestPosition);
+	// search the rest of the route
 	FindBFS(warrior, targetPosition, nearestPosition);
 }
 
