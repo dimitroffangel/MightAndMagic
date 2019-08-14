@@ -6,6 +6,7 @@
 class Demon : virtual public Creature
 {
 private:
+	const char startingValuesSymbol = 'D';
 	const unsigned startingValuesLevel = 1;
 	const float startingValuesExperience = 0;
 	const float startingValuesExperienceGives = 200;

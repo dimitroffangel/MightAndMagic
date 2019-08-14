@@ -19,6 +19,7 @@ private:
 	Hero* m_Attacker;
 	Hero* m_Defender;
 	bool m_IsBattleOver;
+	char m_NumberOfBots; // 0 -> attacker is bot, 1 -> defender, 2 -> both, -1 -> none
 
 	std::string NumberToString(unsigned number) const;
 	void DrawCommanderArmy(Hero* commander, size_t y);
@@ -82,6 +83,11 @@ public:
 	void ForfeitBattle()
 	{
 		m_IsBattleOver = true;
+	}
+
+	void SetNumberOfBots(char number)
+	{
+		m_NumberOfBots = number;
 	}
 };
 

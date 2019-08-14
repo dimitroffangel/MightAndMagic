@@ -41,7 +41,8 @@ void Hero::AddUnit(const Creature & unit, size_t battalionIndex)
 	if (m_Army[battalionIndex].size() == 0)
 		m_BattalionsLength++;
 
-	m_Army[battalionIndex].push_back(CreatureHandler(unit));
+	CreatureHandler handlerUnit(unit);
+	m_Army[battalionIndex].push_back(handlerUnit);
 }
 
 Creature & Hero::PeekUnit(size_t battalionIndex) const

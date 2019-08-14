@@ -12,9 +12,9 @@ CreatureHandler::CreatureHandler(const CreatureHandler & other) : m_Handler(null
 		m_Handler = other.m_Handler->GetCreatureInstance();
 }
 
-CreatureHandler::CreatureHandler(const Creature & Creature)
+CreatureHandler::CreatureHandler(const Creature & creature)
 {
-	m_Handler = Creature.GetCreatureInstance();
+	m_Handler = creature.GetCreatureInstance();
 }
 
 

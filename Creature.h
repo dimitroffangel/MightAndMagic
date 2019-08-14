@@ -21,6 +21,7 @@ protected:
 	unsigned m_MovementOnBattlefield;
 	bool m_IsDead;
 	bool m_HasPassedTurn;
+	Creature* m_BattleTarget;
 	// inventory
 
 public:
@@ -29,6 +30,7 @@ public:
 		float attack, float shots, float armor, float stealth, float movementOnBattlefield);
 	Creature(const std::string tag);
 	Creature(const std::string tag, const unsigned x, const unsigned y, bool isStatic, const char symbol);
+	virtual ~Creature();
 
 	virtual void LevelUp() = 0;
 	virtual void Die() = 0;

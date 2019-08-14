@@ -4,6 +4,7 @@
 
 Dragon::Dragon() : Creature("Dragon")
 {
+	m_Symbol = startingValuesSymbol;
 	m_Level = startingValuesLevel;
 	m_Experience = startingValuesExperience;
 	m_ExperienceGives = startingValuesExperienceGives;

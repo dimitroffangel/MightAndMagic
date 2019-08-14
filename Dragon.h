@@ -6,6 +6,7 @@
 class Dragon : virtual public Creature
 {
 private:
+	const char startingValuesSymbol = 'R';
 	const unsigned startingValuesLevel = 1;
 	const float startingValuesExperience = 0;
 	const float startingValuesExperienceGives = 190;

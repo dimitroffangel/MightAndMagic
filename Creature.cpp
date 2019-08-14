@@ -43,6 +43,10 @@ Creature::Creature(const std::string tag, const unsigned x, const unsigned y, bo
 
 }
 
+Creature::~Creature()
+{
+}
+
 void Creature::TakeDamage(float damage)
 {
 	m_HP -= damage;

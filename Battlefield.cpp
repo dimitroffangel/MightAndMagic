@@ -227,6 +227,17 @@ void Battlefield::MakeBotTurn()
 		4) if it cannot find, just guard one unit
 		5) if the assessment is a lot bigger than the current
 	*/
+
+	if (m_NumberOfBots == '1')
+	{
+		// 1)
+		size_t numberOfBattalions = m_Defender->GetNumberOfBattalions();
+
+		for (size_t i = 0; i < numberOfBattalions; i++)
+		{
+
+		}
+	}
 }
 
 std::string Battlefield::NumberToString(unsigned number) const

@@ -267,6 +267,10 @@ void Engine::WaitForKeyPress(CurrentTime& start)
 
 		std::unique_ptr<Battlefield> ptr_Battlefield(new Battlefield(m_AboutToAttack, m_AboutToDefend));
 		
+		// check if there is a bot there
+		if(m_AboutToAttack->GetTagName().find("Enemy"))
+
+
 		m_Battle = std::move(ptr_Battlefield);
 		m_Battle->DrawBattlefield();
 
@@ -576,7 +580,13 @@ void Engine::BeforeStartingGame()
 		player.AddUnit(Squire(), 1);
 
 	for (size_t i = 0; i < 5; i++)
-		player.AddUnit(Squire(), 2);
+		player.AddUnit(Demon(), 2);
+
+	for (size_t i = 0; i < 5; i++)
+		player.AddUnit(Balfur(), 3);
+
+	for (size_t i = 0; i < 5; i++)
+		player.AddUnit(Dragon(), 4);
 
 	Resource resourceMinerals("Resource-Minerals", 2, 2, true, '*', "Minerals", 100);
 	Resource resourceWoods("Resource-Woods", 4, 4, true, 'W', "Woods", 120);
