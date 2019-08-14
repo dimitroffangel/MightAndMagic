@@ -68,8 +68,6 @@ void Battlefield::ClearBattlefield()
 			DrawingObject::DrawObject(DrawingObject::HConsole, " ", position, 0);
 		}
 	}
-
-	//DrawArmy();
 }
 
 void Battlefield::SwapCreatures(COORD from, COORD to, bool canActivatePassive)
@@ -80,8 +78,8 @@ void Battlefield::SwapCreatures(COORD from, COORD to, bool canActivatePassive)
 		(MAX_HEIGHT - to.Y > maxStrayFromHero || MAX_HEIGHT - from.Y > maxStrayFromHero || (from.X == to.X && from.Y == to.Y)))
 		return;
 
-	int commanderOnebattalionIndex = GetPosition(m_Commander_One, from);
-	int commanderTwobattalionIndex = GetPosition(m_Commander_Two, from);
+	int commanderOnebattalionIndex = GetPosition(m_Attacker, from);
+	int commanderTwobattalionIndex = GetPosition(m_Defender, from);
 	int battalionIndex;
 
 	if (commanderOnebattalionIndex != -1) // if there is a marked first unit, change its location...
@@ -91,17 +89,17 @@ void Battlefield::SwapCreatures(COORD from, COORD to, bool canActivatePassive)
 		// change the position
 		if (!canActivatePassive)
 		{
-			int commanderOnebattalionIndex_To = GetPosition(m_Commander_One, to);
+			int commanderOnebattalionIndex_To = GetPosition(m_Attacker, to);
 
 			// change the first marked unit
-			m_Commander_One->PeekUnit(battalionIndex).SetLocation(to.X, to.Y);
+			m_Attacker->PeekUnit(battalionIndex).SetLocation(to.X, to.Y);
 			
 			if (commanderOnebattalionIndex_To != -1) // if there is not a unit there			
-				m_Commander_One->PeekUnit(commanderOnebattalionIndex_To).SetLocation(from.X, from.Y);
+				m_Attacker->PeekUnit(commanderOnebattalionIndex_To).SetLocation(from.X, from.Y);
 		}
 
 		else // there won't be a swap here between batalions but only between a unit and an empty space...
-			m_Commander_One->PeekUnit(battalionIndex).MoveOnBattlefield(to.X, to.Y);
+			m_Attacker->PeekUnit(battalionIndex).MoveOnBattlefield(to.X, to.Y);
 	}
 
 	else if (commanderTwobattalionIndex != -1) // if the first marked unit is valid and the second one
@@ -111,15 +109,15 @@ void Battlefield::SwapCreatures(COORD from, COORD to, bool canActivatePassive)
 		// change the position
 		if (!canActivatePassive)
 		{
-			m_Commander_Two->PeekUnit(battalionIndex).SetLocation(to.X, to.Y);
+			m_Defender->PeekUnit(battalionIndex).SetLocation(to.X, to.Y);
 			
-			int commanderOnebattalionIndex_To = GetPosition(m_Commander_Two, to);
+			int commanderOnebattalionIndex_To = GetPosition(m_Defender, to);
 
-			m_Commander_Two->PeekUnit(commanderOnebattalionIndex_To).SetLocation(from.X, from.Y);
+			m_Defender->PeekUnit(commanderOnebattalionIndex_To).SetLocation(from.X, from.Y);
 		}
 
 		else
-			m_Commander_Two->PeekUnit(battalionIndex).MoveOnBattlefield(to.X, to.Y);
+			m_Defender->PeekUnit(battalionIndex).MoveOnBattlefield(to.X, to.Y);
 	}
 
 	else
@@ -185,14 +183,14 @@ void Battlefield::MoveCreature(COORD from, COORD to, bool isPlayerOne)
 
 	if (isPlayerOne)
 	{
-		commanderOneBattalionIndex = GetPosition(m_Commander_One, from);
-		commanderTwoBattalionIndex = GetPosition(m_Commander_Two, to);
+		commanderOneBattalionIndex = GetPosition(m_Attacker, from);
+		commanderTwoBattalionIndex = GetPosition(m_Defender, to);
 	}
 
 	else
 	{
-		commanderOneBattalionIndex = GetPosition(m_Commander_Two, from);
-		commanderTwoBattalionIndex = GetPosition(m_Commander_One, to);
+		commanderOneBattalionIndex = GetPosition(m_Defender, from);
+		commanderTwoBattalionIndex = GetPosition(m_Attacker, to);
 	}
 
 	int battalionIndex;
@@ -203,7 +201,7 @@ void Battlefield::MoveCreature(COORD from, COORD to, bool isPlayerOne)
 
 	if (commanderTwoBattalionIndex == -1) // then a swap will do the job, if validations hold
 	{
-		if ((isPlayerOne && GetPosition(m_Commander_One, to) != -1) || (!isPlayerOne && GetPosition(m_Commander_Two, to) != -1))
+		if ((isPlayerOne && GetPosition(m_Attacker, to) != -1) || (!isPlayerOne && GetPosition(m_Defender, to) != -1))
 			return;
 
 		battalionIndex = commanderOneBattalionIndex;
@@ -215,11 +213,21 @@ void Battlefield::MoveCreature(COORD from, COORD to, bool isPlayerOne)
 	// else there is a fight ahead
 
 	if (isPlayerOne)
-		TryMovingCreature(m_Commander_One, m_Commander_Two, commanderOneBattalionIndex, commanderTwoBattalionIndex);
+		TryMovingCreature(m_Attacker, m_Defender, commanderOneBattalionIndex, commanderTwoBattalionIndex);
 	else
-		TryMovingCreature(m_Commander_Two, m_Commander_One, commanderOneBattalionIndex, commanderTwoBattalionIndex);
+		TryMovingCreature(m_Defender, m_Attacker, commanderOneBattalionIndex, commanderTwoBattalionIndex);
 }
 
+void Battlefield::MakeBotTurn()
+{
+	/*
+		1) iterate through all battalions
+		2) find the one minion with lower assessment
+		3) set it as a target
+		4) if it cannot find, just guard one unit
+		5) if the assessment is a lot bigger than the current
+	*/
+}
 
 std::string Battlefield::NumberToString(unsigned number) const
 {
@@ -280,10 +288,10 @@ void Battlefield::DrawCommanderArmy(Hero* commander, size_t y)
 void Battlefield::DrawArmy()
 {
 	// draw playerOneCommmander's army
-	DrawCommanderArmy(m_Commander_One, MAX_HEIGHT - 1);
+	DrawCommanderArmy(m_Attacker, MAX_HEIGHT - 1);
 
 	// do the same for the second commander
-	DrawCommanderArmy(m_Commander_Two, 1);
+	DrawCommanderArmy(m_Defender, 1);
 	
 
 	// draw his army from the bottom
@@ -416,12 +424,12 @@ void Battlefield::TryEndingBattle()
 {
 	// ::TODO
 
-	if (m_Commander_One->GetNumberOfSoldiers() == 0)
+	if (m_Attacker->GetNumberOfSoldiers() == 0)
 	{
 		m_IsBattleOver = true;
 	}
 
-	else if (m_Commander_Two->GetNumberOfSoldiers() == 0)
+	else if (m_Defender->GetNumberOfSoldiers() == 0)
 	{
 		m_IsBattleOver = true;
 	}
@@ -440,8 +448,8 @@ Hero & Battlefield::FindHero(const std::string tag)
 }
 
 Battlefield::Battlefield(Hero * commanderOne, Hero * commanderTwo)
-	:m_Commander_One(commanderOne), 
-	m_Commander_Two(commanderTwo),
+	:m_Attacker(commanderOne), 
+	m_Defender(commanderTwo),
 	m_IsBattleOver(false)
 {
 

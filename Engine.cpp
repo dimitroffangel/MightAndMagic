@@ -306,16 +306,26 @@ void Engine::WaitForKeyPress(CurrentTime& start)
 
 	if ((GetKeyState('T') & 0x8000) && !m_IsWaitingConfirmation)
 	{
-		if (isInBattle && canSwapUnits)
+		if (isInBattle)
 		{
-			canSwapUnits = false;
-			canMoveUnits = true;
+			if (canSwapUnits)
+			{
+				canSwapUnits = false;
+				canMoveUnits = true;
+			}
+
+			else
+			{
+				m_Battle->MakeBotTurn();
+			}
+
 			return;
 		}
 
 
 		// finish turn
 		m_CurrentMap->UpdateChanges();
+
 	}
 
 	if ((GetKeyState('R') & 0x8000) && isInBattle)

@@ -16,8 +16,8 @@ private:
 
 	vectorString m_ObjectsDesignOnBattlefield;
 	std::vector<HeroHandler> m_HeroesOnBattlefield;
-	Hero* m_Commander_One;
-	Hero* m_Commander_Two;
+	Hero* m_Attacker;
+	Hero* m_Defender;
 	bool m_IsBattleOver;
 
 	std::string NumberToString(unsigned number) const;
@@ -29,7 +29,6 @@ private:
 	void TryMovingCreature(Hero* attackerHero, Hero* defenderHero, size_t commanderOneBattalionIndex, size_t commanderTwoBattalionIndex);
 	void UpdateBattalionAfterFight(Creature* creature, Hero* owner, size_t battalionIndex);
 	void TryEndingBattle();
-
 	Hero& FindHero(const std::string tag);
 
 public:
@@ -38,6 +37,7 @@ public:
 	void ClearBattlefield();
 	void SwapCreatures(COORD from, COORD to, bool canActivatePassive);
 	void MoveCreature(COORD from, COORD to, bool isPlayerOne);
+	void MakeBotTurn();
 
 	unsigned GetWidth() const
 	{
@@ -66,12 +66,12 @@ public:
 
 	const Hero* GetAttacker() const
 	{
-		return m_Commander_One;
+		return m_Attacker;
 	}
 
 	const Hero* GetDefender() const
 	{
-		return m_Commander_Two;
+		return m_Defender;
 	}
 
 	bool IsBattleOver() const
