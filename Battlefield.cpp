@@ -514,6 +514,7 @@ void Battlefield::FindBFS(Creature* warrior, COORD targetPosition, COORD fromPos
 		currentDistance, minDistance, static_cast<int>(CenterRatio) * -1, static_cast<int>(MoveableFieldOffset) * -1))
 		return;
 
+	// add the new route
 	warrior->AddLocationToRoad(nearestPosition);
 	FindBFS(warrior, targetPosition, nearestPosition);
 }
