@@ -5,6 +5,9 @@
 
 class Creature : public GameObject
 {
+public:
+	static const int PowerRatingThreshold = 200;
+
 protected:
 	char m_Symbol;
 	unsigned m_Level;
@@ -67,6 +70,17 @@ public:
 		m_Position.X = x;
 		m_Position.Y = y;
 	}
+
+	void SetBattleTarget(Creature& creature)
+	{
+		m_BattleTarget = &creature;
+	}
+
+	const Creature* const GetBattleTarget() const
+	{
+		return m_BattleTarget;
+	}
+
 };
 
 #endif

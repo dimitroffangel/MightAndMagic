@@ -267,12 +267,22 @@ void Engine::WaitForKeyPress(CurrentTime& start)
 
 		std::unique_ptr<Battlefield> ptr_Battlefield(new Battlefield(m_AboutToAttack, m_AboutToDefend));
 		
-		// check if there is a bot there
-		if(m_AboutToAttack->GetTagName().find("Enemy"))
-
-
 		m_Battle = std::move(ptr_Battlefield);
 		m_Battle->DrawBattlefield();
+
+		// check if there is a bot there
+		if (m_AboutToAttack->GetTagName().find("Enemy") != -1)
+		{
+			if (m_AboutToDefend->GetTagName().find("Enemy"))
+				m_Battle->SetNumberOfBots('2');
+
+			else
+				m_Battle->SetNumberOfBots('0');
+		}
+
+		else if (m_AboutToDefend->GetTagName().find("Enemy") != -1)
+			m_Battle->SetNumberOfBots('1');
+
 
 		unsigned battleWidth = m_Battle.get()->GetWidth();
 		unsigned battleHeight = m_Battle.get()->GetHeight();

@@ -231,11 +231,34 @@ void Battlefield::MakeBotTurn()
 	if (m_NumberOfBots == '1')
 	{
 		// 1)
-		size_t numberOfBattalions = m_Defender->GetNumberOfBattalions();
+		size_t attackerNumberOfBattalions = m_Defender->GetNumberOfBattalions();
+		size_t defenderNumberOfBattalions = m_Attacker->GetNumberOfBattalions();
 
-		for (size_t i = 0; i < numberOfBattalions; i++)
+		Creature* attacker;
+		Creature* defender;
+
+		for (size_t i = 0; i < attackerNumberOfBattalions; i++)
 		{
+			if (m_Defender->GetNumberOfSoldiersInBattalion(i) == 0)
+				continue;
 
+			attacker = &m_Defender->PeekUnit(i);
+
+			for (size_t j = 0; j < defenderNumberOfBattalions; j++)
+			{
+				if (m_Attacker->GetNumberOfSoldiersInBattalion(j) == 0)
+					continue;
+
+				defender = &m_Attacker->PeekUnit(j);
+
+				if (attacker->GetPowerRating() >= defender->GetPowerRating() - Creature::PowerRatingThreshold)
+				{
+					if (attacker->GetBattleTarget() && attacker->GetBattleTarget()->GetPowerRating() > defender->GetPowerRating())
+						continue;
+
+					attacker->SetBattleTarget(*defender);
+				}
+			}
 		}
 	}
 }
@@ -461,7 +484,8 @@ Hero & Battlefield::FindHero(const std::string tag)
 Battlefield::Battlefield(Hero * commanderOne, Hero * commanderTwo)
 	:m_Attacker(commanderOne), 
 	m_Defender(commanderTwo),
-	m_IsBattleOver(false)
+	m_IsBattleOver(false),
+	m_NumberOfBots('\0')
 {
 
 	// fill the map with blank spots

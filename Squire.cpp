@@ -40,7 +40,7 @@ void Squire::Attack(Creature& enemy)
 
 void Squire::Defend(Creature & enemy)
 {
-	enemy.TakeDamage((m_Attack - m_Armor / 2) * 1.5f);
+	enemy.TakeDamage((m_Attack / 2) * 1.5f);
 }
 
 void Squire::MoveOnBattlefield(const int x, const int y)
