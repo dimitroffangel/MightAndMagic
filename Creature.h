@@ -3,6 +3,8 @@
 
 #include "GameObject.h"
 
+#include <vector>
+
 class Creature : public GameObject
 {
 public:
@@ -25,6 +27,7 @@ protected:
 	bool m_IsDead;
 	bool m_HasPassedTurn;
 	Creature* m_BattleTarget;
+	std::vector<COORD> m_TargetRoute;
 	// inventory
 
 public:
@@ -79,6 +82,11 @@ public:
 	const Creature* const GetBattleTarget() const
 	{
 		return m_BattleTarget;
+	}
+
+	void AddLocationToRoad(COORD position)
+	{
+		m_TargetRoute.push_back(position);
 	}
 
 };

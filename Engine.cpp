@@ -336,7 +336,6 @@ void Engine::WaitForKeyPress(CurrentTime& start)
 			return;
 		}
 
-
 		// finish turn
 		m_CurrentMap->UpdateChanges();
 

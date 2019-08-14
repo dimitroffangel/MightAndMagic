@@ -78,8 +78,8 @@ void Battlefield::SwapCreatures(COORD from, COORD to, bool canActivatePassive)
 		(MAX_HEIGHT - to.Y > maxStrayFromHero || MAX_HEIGHT - from.Y > maxStrayFromHero || (from.X == to.X && from.Y == to.Y)))
 		return;
 
-	int commanderOnebattalionIndex = GetPosition(m_Attacker, from);
-	int commanderTwobattalionIndex = GetPosition(m_Defender, from);
+	int commanderOnebattalionIndex = GetPosition(m_AttackingCommander, from);
+	int commanderTwobattalionIndex = GetPosition(m_DefenderCommander, from);
 	int battalionIndex;
 
 	if (commanderOnebattalionIndex != -1) // if there is a marked first unit, change its location...
@@ -89,17 +89,17 @@ void Battlefield::SwapCreatures(COORD from, COORD to, bool canActivatePassive)
 		// change the position
 		if (!canActivatePassive)
 		{
-			int commanderOnebattalionIndex_To = GetPosition(m_Attacker, to);
+			int commanderOnebattalionIndex_To = GetPosition(m_AttackingCommander, to);
 
 			// change the first marked unit
-			m_Attacker->PeekUnit(battalionIndex).SetLocation(to.X, to.Y);
+			m_AttackingCommander->PeekUnit(battalionIndex).SetLocation(to.X, to.Y);
 			
 			if (commanderOnebattalionIndex_To != -1) // if there is not a unit there			
-				m_Attacker->PeekUnit(commanderOnebattalionIndex_To).SetLocation(from.X, from.Y);
+				m_AttackingCommander->PeekUnit(commanderOnebattalionIndex_To).SetLocation(from.X, from.Y);
 		}
 
 		else // there won't be a swap here between batalions but only between a unit and an empty space...
-			m_Attacker->PeekUnit(battalionIndex).MoveOnBattlefield(to.X, to.Y);
+			m_AttackingCommander->PeekUnit(battalionIndex).MoveOnBattlefield(to.X, to.Y);
 	}
 
 	else if (commanderTwobattalionIndex != -1) // if the first marked unit is valid and the second one
@@ -109,15 +109,15 @@ void Battlefield::SwapCreatures(COORD from, COORD to, bool canActivatePassive)
 		// change the position
 		if (!canActivatePassive)
 		{
-			m_Defender->PeekUnit(battalionIndex).SetLocation(to.X, to.Y);
+			m_DefenderCommander->PeekUnit(battalionIndex).SetLocation(to.X, to.Y);
 			
-			int commanderOnebattalionIndex_To = GetPosition(m_Defender, to);
+			int commanderOnebattalionIndex_To = GetPosition(m_DefenderCommander, to);
 
-			m_Defender->PeekUnit(commanderOnebattalionIndex_To).SetLocation(from.X, from.Y);
+			m_DefenderCommander->PeekUnit(commanderOnebattalionIndex_To).SetLocation(from.X, from.Y);
 		}
 
 		else
-			m_Defender->PeekUnit(battalionIndex).MoveOnBattlefield(to.X, to.Y);
+			m_DefenderCommander->PeekUnit(battalionIndex).MoveOnBattlefield(to.X, to.Y);
 	}
 
 	else
@@ -183,14 +183,14 @@ void Battlefield::MoveCreature(COORD from, COORD to, bool isPlayerOne)
 
 	if (isPlayerOne)
 	{
-		commanderOneBattalionIndex = GetPosition(m_Attacker, from);
-		commanderTwoBattalionIndex = GetPosition(m_Defender, to);
+		commanderOneBattalionIndex = GetPosition(m_AttackingCommander, from);
+		commanderTwoBattalionIndex = GetPosition(m_DefenderCommander, to);
 	}
 
 	else
 	{
-		commanderOneBattalionIndex = GetPosition(m_Defender, from);
-		commanderTwoBattalionIndex = GetPosition(m_Attacker, to);
+		commanderOneBattalionIndex = GetPosition(m_DefenderCommander, from);
+		commanderTwoBattalionIndex = GetPosition(m_AttackingCommander, to);
 	}
 
 	int battalionIndex;
@@ -201,7 +201,7 @@ void Battlefield::MoveCreature(COORD from, COORD to, bool isPlayerOne)
 
 	if (commanderTwoBattalionIndex == -1) // then a swap will do the job, if validations hold
 	{
-		if ((isPlayerOne && GetPosition(m_Attacker, to) != -1) || (!isPlayerOne && GetPosition(m_Defender, to) != -1))
+		if ((isPlayerOne && GetPosition(m_AttackingCommander, to) != -1) || (!isPlayerOne && GetPosition(m_DefenderCommander, to) != -1))
 			return;
 
 		battalionIndex = commanderOneBattalionIndex;
@@ -213,9 +213,9 @@ void Battlefield::MoveCreature(COORD from, COORD to, bool isPlayerOne)
 	// else there is a fight ahead
 
 	if (isPlayerOne)
-		TryMovingCreature(m_Attacker, m_Defender, commanderOneBattalionIndex, commanderTwoBattalionIndex);
+		TryMovingCreature(m_AttackingCommander, m_DefenderCommander, commanderOneBattalionIndex, commanderTwoBattalionIndex);
 	else
-		TryMovingCreature(m_Defender, m_Attacker, commanderOneBattalionIndex, commanderTwoBattalionIndex);
+		TryMovingCreature(m_DefenderCommander, m_AttackingCommander, commanderOneBattalionIndex, commanderTwoBattalionIndex);
 }
 
 void Battlefield::MakeBotTurn()
@@ -231,34 +231,39 @@ void Battlefield::MakeBotTurn()
 	if (m_NumberOfBots == '1')
 	{
 		// 1)
-		size_t attackerNumberOfBattalions = m_Defender->GetNumberOfBattalions();
-		size_t defenderNumberOfBattalions = m_Attacker->GetNumberOfBattalions();
+		size_t attackerNumberOfBattalions = m_DefenderCommander->GetNumberOfBattalions();
+		size_t defenderNumberOfBattalions = m_AttackingCommander->GetNumberOfBattalions();
 
 		Creature* attacker;
 		Creature* defender;
 
 		for (size_t i = 0; i < attackerNumberOfBattalions; i++)
 		{
-			if (m_Defender->GetNumberOfSoldiersInBattalion(i) == 0)
+			if (m_DefenderCommander->GetNumberOfSoldiersInBattalion(i) == 0)
 				continue;
 
-			attacker = &m_Defender->PeekUnit(i);
+			attacker = &m_DefenderCommander->PeekUnit(i);
 
 			for (size_t j = 0; j < defenderNumberOfBattalions; j++)
 			{
-				if (m_Attacker->GetNumberOfSoldiersInBattalion(j) == 0)
+				if (m_AttackingCommander->GetNumberOfSoldiersInBattalion(j) == 0)
 					continue;
 
-				defender = &m_Attacker->PeekUnit(j);
+				defender = &m_AttackingCommander->PeekUnit(j);
 
+				//2)
 				if (attacker->GetPowerRating() >= defender->GetPowerRating() - Creature::PowerRatingThreshold)
 				{
 					if (attacker->GetBattleTarget() && attacker->GetBattleTarget()->GetPowerRating() > defender->GetPowerRating())
 						continue;
 
+					// 3)
 					attacker->SetBattleTarget(*defender);
 				}
 			}
+
+			// find the best route
+			FindBFS(attacker, attacker->GetBattleTarget()->GetPosition(), attacker->GetPosition());
 		}
 	}
 }
@@ -322,10 +327,10 @@ void Battlefield::DrawCommanderArmy(Hero* commander, size_t y)
 void Battlefield::DrawArmy()
 {
 	// draw playerOneCommmander's army
-	DrawCommanderArmy(m_Attacker, MAX_HEIGHT - 1);
+	DrawCommanderArmy(m_AttackingCommander, MAX_HEIGHT - 1);
 
 	// do the same for the second commander
-	DrawCommanderArmy(m_Defender, 1);
+	DrawCommanderArmy(m_DefenderCommander, 1);
 	
 
 	// draw his army from the bottom
@@ -444,6 +449,75 @@ void Battlefield::TryMovingCreature(Hero* attackerHero, Hero* defenderHero, size
 		NumberToString(attackerHero->GetNumberOfSoldiersInBattalion(commanderOneBattalionIndex)).c_str());
 }
 
+bool Battlefield::TryMovingOn(COORD fromPosition, COORD targetPosition, COORD& currentDirection, COORD& nearestPosition, 
+	float& currentDistance, float& minDistance, int additionX, int additionY) const
+{
+	if ((fromPosition.X + additionX >= 0 && fromPosition.X + additionX < MAX_WIDTH &&
+		fromPosition.Y + additionY >= 0 && fromPosition.Y + additionY < MAX_HEIGHT &&
+		!ContainsCreature(fromPosition.X + additionX, fromPosition.Y + additionY)) ||
+		(targetPosition.X == fromPosition.X + additionX && targetPosition.Y == fromPosition.Y + additionY))
+	{
+		currentDirection = fromPosition;
+		currentDirection.X += additionX;
+		currentDirection.Y += additionY;
+
+		if (targetPosition.X == currentDirection.X && targetPosition.Y == currentDirection.Y)
+			return true;
+
+		currentDistance = DistanceBetween(targetPosition, currentDirection);
+
+		if (currentDistance < minDistance)
+		{
+			nearestPosition = currentDirection;
+			minDistance = currentDistance;
+		}
+	}
+
+	return false;
+}
+
+void Battlefield::FindBFS(Creature* warrior, COORD targetPosition, COORD fromPosition)
+{
+	float currentDistance = 100000001;
+	float minDistance = 1000001;
+	COORD nearestPosition, currentDirection;
+
+	// top
+	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition,
+		currentDistance, minDistance, 0, static_cast<int>(MoveableFieldOffset) * -1))
+		return;
+	// top-right
+	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition,
+		currentDistance, minDistance, CenterRatio, static_cast<int>(MoveableFieldOffset) * -1))
+		return;
+		
+	// right
+	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition, currentDistance, minDistance, CenterRatio, 0))
+		return;
+	// bot-right
+	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition,
+		currentDistance, minDistance, CenterRatio, MoveableFieldOffset))
+		return;
+	// bot
+	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition, currentDistance, minDistance, 0, MoveableFieldOffset))
+		return;
+	// bot-left
+	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition,
+		currentDistance, minDistance, static_cast<int>(CenterRatio) * -1, MoveableFieldOffset))
+		return;
+	// left
+	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition,
+		currentDistance, minDistance, static_cast<int>(CenterRatio) * -1, 0))
+		return;
+	// top-left
+	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition,
+		currentDistance, minDistance, static_cast<int>(CenterRatio) * -1, static_cast<int>(MoveableFieldOffset) * -1))
+		return;
+
+	warrior->AddLocationToRoad(nearestPosition);
+	FindBFS(warrior, targetPosition, nearestPosition);
+}
+
 void Battlefield::UpdateBattalionAfterFight(Creature* creature, Hero * owner, size_t battalionIndex)
 {
 	char creatureSymbol[2];
@@ -458,20 +532,20 @@ void Battlefield::TryEndingBattle()
 {
 	// ::TODO
 
-	if (m_Attacker->GetNumberOfSoldiers() == 0)
+	if (m_AttackingCommander->GetNumberOfSoldiers() == 0)
 	{
 		m_IsBattleOver = true;
 	}
 
-	else if (m_Defender->GetNumberOfSoldiers() == 0)
+	else if (m_DefenderCommander->GetNumberOfSoldiers() == 0)
 	{
 		m_IsBattleOver = true;
 	}
 }
-	
-Hero & Battlefield::FindHero(const std::string tag)
+
+Hero & Battlefield::FindHero(const std::string tag) const
 {
-	for (std::vector<HeroHandler>::iterator it = m_HeroesOnBattlefield.begin(); 
+	for (std::vector<HeroHandler>::const_iterator it = m_HeroesOnBattlefield.cbegin(); 
 		it != m_HeroesOnBattlefield.end(); it++)
 	{
 		if (it->GetTagName() == tag)
@@ -481,9 +555,49 @@ Hero & Battlefield::FindHero(const std::string tag)
 	throw std::out_of_range("\n Couldn't find a hero with such a tag... \n");
 }
 
+float Battlefield::DistanceBetween(COORD from, COORD to) const
+{
+	return (from.X - to.X) * (from.X - to.X) + (from.Y - to.Y) * (from.Y - to.Y);
+}
+
+bool Battlefield::ContainsCreature(size_t x, size_t y) const
+{
+	size_t commanderNumberOfBattalions = m_AttackingCommander->GetNumberOfBattalions();
+	COORD currentBattalionPosition;
+
+	// check the attacker first for any eventual collision...
+	for (size_t i = 0; i < commanderNumberOfBattalions; i++)
+	{
+		if (m_AttackingCommander->GetNumberOfSoldiersInBattalion(i) == 0)
+			continue;
+
+		currentBattalionPosition = m_AttackingCommander->PeekUnit(i).GetPosition();
+
+		if (currentBattalionPosition.X == x && currentBattalionPosition.Y == y)
+			return true;
+	}
+
+	// switch the number of battalions to the defender
+	commanderNumberOfBattalions = m_DefenderCommander->GetNumberOfBattalions();
+
+	// do the same logic for the defender as was as the attacker's examination
+	for (size_t i = 0; i < commanderNumberOfBattalions; i++)
+	{
+		if (m_DefenderCommander->GetNumberOfSoldiersInBattalion(i) == 0)
+			continue;
+	
+		currentBattalionPosition = m_DefenderCommander->PeekUnit(i).GetPosition();
+
+		if (currentBattalionPosition.X == x && currentBattalionPosition.Y == y)
+			return true;
+	}
+
+	return false;
+}
+
 Battlefield::Battlefield(Hero * commanderOne, Hero * commanderTwo)
-	:m_Attacker(commanderOne), 
-	m_Defender(commanderTwo),
+	:m_AttackingCommander(commanderOne), 
+	m_DefenderCommander(commanderTwo),
 	m_IsBattleOver(false),
 	m_NumberOfBots('\0')
 {

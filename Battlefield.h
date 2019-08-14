@@ -16,8 +16,8 @@ private:
 
 	vectorString m_ObjectsDesignOnBattlefield;
 	std::vector<HeroHandler> m_HeroesOnBattlefield;
-	Hero* m_Attacker;
-	Hero* m_Defender;
+	Hero* m_AttackingCommander;
+	Hero* m_DefenderCommander;
 	bool m_IsBattleOver;
 	char m_NumberOfBots; // 0 -> attacker is bot, 1 -> defender, 2 -> both, -1 -> none
 
@@ -27,10 +27,14 @@ private:
 	int GetPosition(const Hero*, COORD position) const;
 	void DrawBattalion(COORD positionCreature, const char* creatureSymbol, const char* stringNumber);
 	bool TryKillingBattalion(Creature* &creature, Hero* owner, size_t battalionIndex);
-	void TryMovingCreature(Hero* attackerHero, Hero* defenderHero, size_t commanderOneBattalionIndex, size_t commanderTwoBattalionIndex);
+	void TryMovingCreature(Hero*, Hero* defenderHero, size_t commanderOneBattalionIndex, size_t commanderTwoBattalionIndex);
+	bool TryMovingOn(COORD, COORD, COORD&, COORD&, float&, float&, int, int) const;
+	void FindBFS(Creature*, COORD, COORD);
 	void UpdateBattalionAfterFight(Creature* creature, Hero* owner, size_t battalionIndex);
 	void TryEndingBattle();
-	Hero& FindHero(const std::string tag);
+	Hero& FindHero(const std::string tag) const;
+	float DistanceBetween(COORD from, COORD to) const;
+	bool ContainsCreature(size_t, size_t) const;
 
 public:
 	Battlefield(Hero* commanderOne, Hero* commanderTwo);
@@ -67,12 +71,12 @@ public:
 
 	const Hero* GetAttacker() const
 	{
-		return m_Attacker;
+		return m_AttackingCommander;
 	}
 
 	const Hero* GetDefender() const
 	{
-		return m_Defender;
+		return m_DefenderCommander;
 	}
 
 	bool IsBattleOver() const
