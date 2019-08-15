@@ -331,6 +331,9 @@ void Engine::WaitForKeyPress(CurrentTime& start)
 			else
 			{
 				m_Battle->MakeBotTurn();
+
+				if (m_Battle->IsBattleOver())
+					AfterBattleLogic();				
 			}
 
 			return;

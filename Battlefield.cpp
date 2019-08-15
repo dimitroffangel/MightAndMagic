@@ -264,6 +264,22 @@ void Battlefield::MakeBotTurn()
 
 			// find the best route
 			FindBFS(attacker, attacker->GetBattleTarget()->GetPosition(), attacker->GetPosition());
+
+			size_t roadSize = attacker->GetRoadLength();
+
+			// move the attacker now
+			if (attacker->GetMovementLefts() >= roadSize)
+			{
+				COORD moveTo = attacker->GetPositionFromRoute(roadSize - 1);
+				MoveCreature(attacker->GetPosition(), moveTo, false);
+				MoveCreature(attacker->GetPosition(), attacker->GetBattleTarget()->GetPosition(), false);
+			}
+
+			else
+			{
+				COORD moveTo = attacker->GetPositionFromRoute(attacker->GetMovementLefts());
+				MoveCreature(attacker->GetPosition(), moveTo, false);
+			}
 		}
 	}
 }
@@ -380,10 +396,10 @@ void Battlefield::DrawBattalion(COORD positionCreature, const char* battalionSym
 
 bool Battlefield::TryKillingBattalion(Creature* &creature, Hero * owner, size_t battalionIndex)
 {
+	TryEndingBattle();
+
 	if (creature->GetHealth() > 0)
 		return false;
-
-	TryEndingBattle();
 
 	COORD creaturePosition = creature->GetPosition();
 

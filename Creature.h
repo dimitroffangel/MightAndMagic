@@ -89,6 +89,16 @@ public:
 		m_TargetRoute.push_back(position);
 	}
 
+	size_t GetRoadLength() const
+	{
+		return m_TargetRoute.size();
+	}
+
+	COORD GetPositionFromRoute(size_t index) const
+	{
+		return m_TargetRoute[index];
+	}
+
 };
 
 #endif
