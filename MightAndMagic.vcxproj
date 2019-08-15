@@ -116,6 +116,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Angel.cpp" />
+    <ClCompile Include="Archer.cpp" />
     <ClCompile Include="Balfur.cpp" />
     <ClCompile Include="Battlefield.cpp" />
     <ClCompile Include="Creature.cpp" />
@@ -138,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Angel.h" />
+    <ClInclude Include="Archer.h" />
     <ClInclude Include="Balfur.h" />
     <ClInclude Include="Battlefield.h" />
     <ClInclude Include="Creature.h" />

@@ -428,11 +428,40 @@ void Battlefield::TryMovingCreature(Hero* attackerHero, Hero* defenderHero, size
 	Creature* defender = &defenderHero->PeekUnit(commanderTwoBattalionIndex);
 	size_t attackerBattalionLength = attackerHero->GetNumberOfSoldiersInBattalion(commanderOneBattalionIndex);
 
+	// check to see if the distance between them is too much, if so there cannot be a fight
+	COORD attackerPosition = attacker->GetPosition();
+	COORD defenderPosition = defender->GetPosition();
+
+	//if (attackerPosition.X - defenderPosition.X != 0 && attackerPosition.X - defenderPosition.X != CenterRatio &&
+	//	defenderPosition.X - attackerPosition.X != CenterRatio &&
+	//	attackerPosition.Y - defenderPosition.Y != 0 && attackerPosition.Y - defenderPosition.Y != MoveableFieldOffset &&
+	//	defenderPosition.Y - attackerPosition.Y != MoveableFieldOffset && !attacker->IsRange())
+	//	return;
+
+	if ((attackerPosition.X - defenderPosition.X != 0 ||
+		(attackerPosition.Y - defenderPosition.Y != MoveableFieldOffset && defenderPosition.Y - attackerPosition.Y != MoveableFieldOffset))
+		&& (attackerPosition.X - defenderPosition.X != CenterRatio ||
+		(attackerPosition.Y - defenderPosition.Y != 0 && attackerPosition.Y - defenderPosition.Y != MoveableFieldOffset &&
+			defenderPosition.Y - attackerPosition.Y != MoveableFieldOffset))
+		&& (defenderPosition.X - attackerPosition.X != CenterRatio ||
+		(attackerPosition.Y - defenderPosition.Y != 0 && attackerPosition.Y - defenderPosition.Y != MoveableFieldOffset &&
+			defenderPosition.Y - attackerPosition.Y != MoveableFieldOffset)) && !attacker->IsRange())
+		return;
+
 	// while defender's health is bigger than zero and there are left defenders
 	for (size_t i = 0; i < attackerBattalionLength; i++)
 	{
 		attacker->Attack(*defender);
-		defender->Defend(*attacker);
+
+		if ((attackerPosition.X - defenderPosition.X == 0 &&
+			(attackerPosition.Y - defenderPosition.Y == MoveableFieldOffset || defenderPosition.Y - attackerPosition.Y == MoveableFieldOffset))
+			|| (attackerPosition.X - defenderPosition.X == CenterRatio &&
+			(attackerPosition.Y - defenderPosition.Y == 0 || attackerPosition.Y - defenderPosition.Y == MoveableFieldOffset ||
+				defenderPosition.Y - attackerPosition.Y == MoveableFieldOffset))
+			|| (defenderPosition.X - attackerPosition.X == CenterRatio &&
+			(attackerPosition.Y - defenderPosition.Y == 0 || attackerPosition.Y - defenderPosition.Y == MoveableFieldOffset ||
+				defenderPosition.Y - attackerPosition.Y == MoveableFieldOffset)))
+			defender->Defend(*attacker);
 
 		if (TryKillingBattalion(defender, defenderHero, commanderTwoBattalionIndex))
 		{

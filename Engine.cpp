@@ -5,6 +5,7 @@
 #include "Drawing.h"
 #include "HavenHero.h"
 #include "Angel.h"
+#include "Archer.h"
 #include "Squire.h"
 #include "Balfur.h"
 #include "Battlefield.h"
@@ -589,7 +590,7 @@ void Engine::BeforeStartingGame()
 
 
 	for (size_t i = 0; i < 123; i++)
-		player.AddUnit(Squire(), 1);
+		player.AddUnit(Archer(), 1);
 
 	for (size_t i = 0; i < 5; i++)
 		player.AddUnit(Demon(), 2);
@@ -600,6 +601,9 @@ void Engine::BeforeStartingGame()
 	for (size_t i = 0; i < 5; i++)
 		player.AddUnit(Dragon(), 4);
 
+	for (size_t i = 0; i < 1000; i++)
+		player.AddUnit(Archer(), 5);
+
 	Resource resourceMinerals("Resource-Minerals", 2, 2, true, '*', "Minerals", 100);
 	Resource resourceWoods("Resource-Woods", 4, 4, true, 'W', "Woods", 120);
 
@@ -608,6 +612,11 @@ void Engine::BeforeStartingGame()
 	// just a test...
 	for (size_t i = 0; i < 2; i++)
 		enemy.AddUnit(Angel(), 0);
+
+
+	for (size_t i = 0; i < 10; i++)
+		enemy.AddUnit(Angel(), 1);
+
 /*
 	for (size_t i = 0; i < 0; i++)
 		enemy.AddUnit(Squire(), 1);*/

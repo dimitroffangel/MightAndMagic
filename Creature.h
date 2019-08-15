@@ -24,6 +24,7 @@ protected:
 	float m_Armor;
 	float m_Stealth;
 	unsigned m_MovementOnBattlefield;
+	bool m_IsRange;
 	bool m_IsDead;
 	bool m_HasPassedTurn;
 	Creature* m_BattleTarget;
@@ -66,6 +67,11 @@ public:
 	char GetSymbol() const
 	{
 		return m_Symbol;
+	}
+
+	bool IsRange() const
+	{
+		return m_IsRange;
 	}
 
 	void SetLocation(const int x, const int y)
