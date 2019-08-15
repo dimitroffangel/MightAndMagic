@@ -231,7 +231,7 @@ void Engine::TryPressingEnter(CurrentTime& start)
 
 void Engine::WaitForKeyPress(CurrentTime& start)
 {
-	if (m_IsWaitingConfirmation && (GetKeyState('U') & 0x8000))
+	if (m_IsWaitingConfirmation && (GetKeyState('U') & 0x8000) && CanPlayerPressKey(start))
 	{
 		// simulate the battle
 		BattleHeroes_QuickSimulation(*m_AboutToAttack, *m_AboutToDefend);
@@ -256,7 +256,7 @@ void Engine::WaitForKeyPress(CurrentTime& start)
 		return;
 	}
 
-	if (m_IsWaitingConfirmation && (GetKeyState('Y') & 0x8000))
+	if (m_IsWaitingConfirmation && (GetKeyState('Y') & 0x8000) && CanPlayerPressKey(start))
 	{
 		m_IsWaitingConfirmation = false;
 		isInBattle = true;
@@ -318,7 +318,7 @@ void Engine::WaitForKeyPress(CurrentTime& start)
 	TryMovingDuringBattle(start);
 	TryPressingEnter(start);
 
-	if ((GetKeyState('T') & 0x8000) && !m_IsWaitingConfirmation)
+	if ((GetKeyState('T') & 0x8000) && !m_IsWaitingConfirmation && CanPlayerPressKey(start))
 	{
 		if (isInBattle)
 		{
