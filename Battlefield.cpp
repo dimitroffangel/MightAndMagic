@@ -493,7 +493,7 @@ void Battlefield::TryMovingCreature(Hero* attackerHero, Hero* defenderHero, size
 		}
 
 		attacker->Attack(*defender);
-/*
+
 		if ((attackerPosition.X - defenderPosition.X == 0 &&
 			(attackerPosition.Y - defenderPosition.Y == MoveableFieldOffset || defenderPosition.Y - attackerPosition.Y == MoveableFieldOffset))
 			|| (attackerPosition.X - defenderPosition.X == CenterRatio &&
@@ -501,7 +501,7 @@ void Battlefield::TryMovingCreature(Hero* attackerHero, Hero* defenderHero, size
 				defenderPosition.Y - attackerPosition.Y == MoveableFieldOffset))
 			|| (defenderPosition.X - attackerPosition.X == CenterRatio &&
 			(attackerPosition.Y - defenderPosition.Y == 0 || attackerPosition.Y - defenderPosition.Y == MoveableFieldOffset ||
-				defenderPosition.Y - attackerPosition.Y == MoveableFieldOffset)))*/
+				defenderPosition.Y - attackerPosition.Y == MoveableFieldOffset)))
 			defender->Defend(*attacker);
 
 		if (TryKillingBattalion(defender, defenderHero, commanderTwoBattalionIndex)) // if defending battalion is dead
