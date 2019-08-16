@@ -28,13 +28,14 @@ private:
 	void DrawBattalion(COORD positionCreature, const char* creatureSymbol, const char* stringNumber);
 	bool TryKillingBattalion(Creature* &creature, Hero* owner, size_t battalionIndex);
 	void TryMovingCreature(Hero*, Hero* defenderHero, size_t commanderOneBattalionIndex, size_t commanderTwoBattalionIndex);
-	bool TryMovingOn(COORD, COORD, COORD&, COORD&, float&, float&, int, int) const;
-	void FindBFS(Creature*, COORD, COORD);
+	bool TryMovingOn(COORD, COORD, COORD&, COORD&, float&, float&, int, int, bool = true) const;
+	void FindBFS(Creature*, COORD, COORD, bool = true);
 	void UpdateBattalionAfterFight(Creature* creature, Hero* owner, size_t battalionIndex);
 	void TryEndingBattle();
 	Hero& FindHero(const std::string tag) const;
 	float DistanceBetween(COORD from, COORD to) const;
 	bool ContainsCreature(size_t, size_t) const;
+	int GetBattalion(Hero*, COORD) const;
 
 public:
 	Battlefield(Hero* commanderOne, Hero* commanderTwo);

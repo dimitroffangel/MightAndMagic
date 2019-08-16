@@ -409,7 +409,7 @@ bool Battlefield::TryKillingBattalion(Creature* &creature, Hero * owner, size_t 
 		DrawBattalion(creature->GetPosition(), "_", "_____");
 
 		// remove the creature from the container
-		owner->RemoveUnit(battalionIndex, 0);	
+		owner->RemoveUnit(battalionIndex, 0);
 		
 		return true;
 	}
@@ -432,11 +432,11 @@ void Battlefield::TryMovingCreature(Hero* attackerHero, Hero* defenderHero, size
 	COORD attackerPosition = attacker->GetPosition();
 	COORD defenderPosition = defender->GetPosition();
 
-	//if (attackerPosition.X - defenderPosition.X != 0 && attackerPosition.X - defenderPosition.X != CenterRatio &&
-	//	defenderPosition.X - attackerPosition.X != CenterRatio &&
-	//	attackerPosition.Y - defenderPosition.Y != 0 && attackerPosition.Y - defenderPosition.Y != MoveableFieldOffset &&
-	//	defenderPosition.Y - attackerPosition.Y != MoveableFieldOffset && !attacker->IsRange())
-	//	return;
+	if (attackerPosition.X - defenderPosition.X != 0 && attackerPosition.X - defenderPosition.X != CenterRatio &&
+		defenderPosition.X - attackerPosition.X != CenterRatio &&
+		attackerPosition.Y - defenderPosition.Y != 0 && attackerPosition.Y - defenderPosition.Y != MoveableFieldOffset &&
+		defenderPosition.Y - attackerPosition.Y != MoveableFieldOffset && !attacker->IsRange())
+		return;
 
 	if ((attackerPosition.X - defenderPosition.X != 0 ||
 		(attackerPosition.Y - defenderPosition.Y != MoveableFieldOffset && defenderPosition.Y - attackerPosition.Y != MoveableFieldOffset))
@@ -451,8 +451,49 @@ void Battlefield::TryMovingCreature(Hero* attackerHero, Hero* defenderHero, size
 	// while defender's health is bigger than zero and there are left defenders
 	for (size_t i = 0; i < attackerBattalionLength; i++)
 	{
-		attacker->Attack(*defender);
+		if (attacker->IsRange())
+		{
+			// find the bfs to the target
+			FindBFS(attacker, defender->GetPosition(), attacker->GetPosition(), false);
 
+			size_t routeLength = attacker->GetRoadLength();
+			COORD currentPosition;
+
+			for (size_t i = 0; i < routeLength; i++)
+			{
+				currentPosition = attacker->GetPositionFromRoute(i);
+				if (ContainsCreature(currentPosition.X, currentPosition.Y))
+				{
+					int casualtyIndex = GetBattalion(m_AttackingCommander, currentPosition);
+
+					Creature* casualtyBattalion;
+
+					if (casualtyIndex != -1)
+					{
+						casualtyBattalion = &m_AttackingCommander[casualtyIndex].PeekUnit(casualtyIndex);
+						attacker->Attack(*casualtyBattalion);
+
+						if (!TryKillingBattalion(casualtyBattalion, m_AttackingCommander, casualtyIndex))
+							UpdateBattalionAfterFight(casualtyBattalion, m_AttackingCommander, casualtyIndex);
+
+					}
+
+					casualtyIndex = GetBattalion(m_DefenderCommander, currentPosition);
+
+					if (casualtyIndex != -1)
+					{
+						casualtyBattalion = &m_DefenderCommander[casualtyIndex].PeekUnit(casualtyIndex);
+						attacker->Attack(*casualtyBattalion);
+
+						if (!TryKillingBattalion(casualtyBattalion, m_DefenderCommander, casualtyIndex))
+							UpdateBattalionAfterFight(casualtyBattalion, m_DefenderCommander, casualtyIndex);
+					}
+				}
+			}
+		}
+
+		attacker->Attack(*defender);
+/*
 		if ((attackerPosition.X - defenderPosition.X == 0 &&
 			(attackerPosition.Y - defenderPosition.Y == MoveableFieldOffset || defenderPosition.Y - attackerPosition.Y == MoveableFieldOffset))
 			|| (attackerPosition.X - defenderPosition.X == CenterRatio &&
@@ -460,12 +501,12 @@ void Battlefield::TryMovingCreature(Hero* attackerHero, Hero* defenderHero, size
 				defenderPosition.Y - attackerPosition.Y == MoveableFieldOffset))
 			|| (defenderPosition.X - attackerPosition.X == CenterRatio &&
 			(attackerPosition.Y - defenderPosition.Y == 0 || attackerPosition.Y - defenderPosition.Y == MoveableFieldOffset ||
-				defenderPosition.Y - attackerPosition.Y == MoveableFieldOffset)))
+				defenderPosition.Y - attackerPosition.Y == MoveableFieldOffset)))*/
 			defender->Defend(*attacker);
 
-		if (TryKillingBattalion(defender, defenderHero, commanderTwoBattalionIndex))
+		if (TryKillingBattalion(defender, defenderHero, commanderTwoBattalionIndex)) // if defending battalion is dead
 		{
-			if (!TryKillingBattalion(attacker, attackerHero, commanderOneBattalionIndex))
+			if (!TryKillingBattalion(attacker, attackerHero, commanderOneBattalionIndex)) // and not the attacking one
 				UpdateBattalionAfterFight(attacker, attackerHero, commanderOneBattalionIndex);
 
 			return;
@@ -495,11 +536,11 @@ void Battlefield::TryMovingCreature(Hero* attackerHero, Hero* defenderHero, size
 }
 
 bool Battlefield::TryMovingOn(COORD fromPosition, COORD targetPosition, COORD& currentDirection, COORD& nearestPosition, 
-	float& currentDistance, float& minDistance, int additionX, int additionY) const
+	float& currentDistance, float& minDistance, int additionX, int additionY, bool canTraceCollisions) const
 {
 	if ((fromPosition.X + additionX >= 0 && fromPosition.X + additionX < MAX_WIDTH &&
 		fromPosition.Y + additionY >= 0 && fromPosition.Y + additionY < MAX_HEIGHT &&
-		!ContainsCreature(fromPosition.X + additionX, fromPosition.Y + additionY)) ||
+		(!ContainsCreature(fromPosition.X + additionX, fromPosition.Y + additionY) || !canTraceCollisions)) ||
 		(targetPosition.X == fromPosition.X + additionX && targetPosition.Y == fromPosition.Y + additionY))
 	{
 		currentDirection = fromPosition;
@@ -521,7 +562,7 @@ bool Battlefield::TryMovingOn(COORD fromPosition, COORD targetPosition, COORD& c
 	return false;
 }
 
-void Battlefield::FindBFS(Creature* warrior, COORD targetPosition, COORD fromPosition)
+void Battlefield::FindBFS(Creature* warrior, COORD targetPosition, COORD fromPosition, bool canTraceCollisions)
 {
 	float currentDistance = 100000001;
 	float minDistance = 1000001;
@@ -529,40 +570,45 @@ void Battlefield::FindBFS(Creature* warrior, COORD targetPosition, COORD fromPos
 
 	// top
 	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition,
-		currentDistance, minDistance, 0, static_cast<int>(MoveableFieldOffset) * -1))
+		currentDistance, minDistance, 0, static_cast<int>(MoveableFieldOffset) * -1, canTraceCollisions))
 		return;
 	// top-right
 	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition,
-		currentDistance, minDistance, CenterRatio, static_cast<int>(MoveableFieldOffset) * -1))
+		currentDistance, minDistance, CenterRatio, static_cast<int>(MoveableFieldOffset) * -1), canTraceCollisions)
 		return;
 		
 	// right
-	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition, currentDistance, minDistance, CenterRatio, 0))
+	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition, currentDistance,
+		minDistance, CenterRatio, 0, canTraceCollisions))
 		return;
 	// bot-right
 	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition,
-		currentDistance, minDistance, CenterRatio, MoveableFieldOffset))
+		currentDistance, minDistance, CenterRatio, MoveableFieldOffset, canTraceCollisions))
 		return;
 	// bot
-	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition, currentDistance, minDistance, 0, MoveableFieldOffset))
+	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition,
+		currentDistance, minDistance, 0, MoveableFieldOffset, canTraceCollisions))
 		return;
 	// bot-left
 	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition,
-		currentDistance, minDistance, static_cast<int>(CenterRatio) * -1, MoveableFieldOffset))
+		currentDistance, minDistance, static_cast<int>(CenterRatio) * -1, MoveableFieldOffset, canTraceCollisions))
 		return;
 	// left
 	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition,
-		currentDistance, minDistance, static_cast<int>(CenterRatio) * -1, 0))
+		currentDistance, minDistance, static_cast<int>(CenterRatio) * -1, 0, canTraceCollisions))
 		return;
 	// top-left
 	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition,
-		currentDistance, minDistance, static_cast<int>(CenterRatio) * -1, static_cast<int>(MoveableFieldOffset) * -1))
+		currentDistance, minDistance, static_cast<int>(CenterRatio) * -1, static_cast<int>(MoveableFieldOffset) * -1), canTraceCollisions)
 		return;
 
 	// add the new route
 	warrior->AddLocationToRoad(nearestPosition);
+	/* debugging stuffs.
+	m_ObjectsDesignOnBattlefield[nearestPosition.Y][nearestPosition.X] = 'W';
+	DrawingObject::DrawObject(DrawingObject::HConsole, "W", nearestPosition, 0);*/
 	// search the rest of the route
-	FindBFS(warrior, targetPosition, nearestPosition);
+	FindBFS(warrior, targetPosition, nearestPosition, canTraceCollisions);
 }
 
 void Battlefield::UpdateBattalionAfterFight(Creature* creature, Hero * owner, size_t battalionIndex)
@@ -641,6 +687,27 @@ bool Battlefield::ContainsCreature(size_t x, size_t y) const
 
 	return false;
 }
+
+int Battlefield::GetBattalion(Hero* commander, COORD position) const
+{
+	size_t commanderBattalionLength = commander->GetNumberOfBattalions();
+
+	COORD currentCreaturePosition;
+
+	for (size_t i = 0; i < commanderBattalionLength; i++)
+	{
+		if (commander->GetNumberOfSoldiersInBattalion(i) == 0)
+			continue;
+
+		currentCreaturePosition = commander->PeekUnit(i).GetPosition();
+
+		if (currentCreaturePosition.X == position.X && currentCreaturePosition.Y == position.Y)
+			return i;
+	}
+
+	return -1;
+}
+
 
 Battlefield::Battlefield(Hero * commanderOne, Hero * commanderTwo)
 	:m_AttackingCommander(commanderOne), 
