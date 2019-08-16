@@ -15,6 +15,8 @@ Squire::Squire() :Creature("Squire")
 	m_Armor = startingValuesArmor;
 	m_Stealth = startingValuesStealth;
 	m_MovementOnBattlefield = startingValuesMovementOnBattlefield;
+
+	m_IsRange = false;
 }
 
 void Squire::LevelUp()

@@ -17,6 +17,8 @@ Dragon::Dragon() : Creature("Dragon")
 	m_Armor = startingValuesArmor;
 	m_Stealth = startingValuesStealth;
 	m_MovementOnBattlefield = startingValuesMovementOnBattlefield;
+
+	m_IsRange = false;
 }
 
 

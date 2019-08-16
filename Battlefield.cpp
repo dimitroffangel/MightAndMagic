@@ -267,6 +267,9 @@ void Battlefield::MakeBotTurn()
 
 			size_t roadSize = attacker->GetRoadLength();
 
+			if (roadSize == 0)
+				continue;
+
 			// move the attacker now
 			if (attacker->GetMovementLefts() >= roadSize)
 			{
@@ -470,19 +473,18 @@ void Battlefield::TryMovingCreature(Hero* attackerHero, Hero* defenderHero, size
 
 					if (casualtyIndex != -1)
 					{
-						casualtyBattalion = &m_AttackingCommander[casualtyIndex].PeekUnit(casualtyIndex);
+						casualtyBattalion = &m_AttackingCommander->PeekUnit(casualtyIndex);
 						attacker->Attack(*casualtyBattalion);
 
 						if (!TryKillingBattalion(casualtyBattalion, m_AttackingCommander, casualtyIndex))
 							UpdateBattalionAfterFight(casualtyBattalion, m_AttackingCommander, casualtyIndex);
-
 					}
 
 					casualtyIndex = GetBattalion(m_DefenderCommander, currentPosition);
 
 					if (casualtyIndex != -1)
 					{
-						casualtyBattalion = &m_DefenderCommander[casualtyIndex].PeekUnit(casualtyIndex);
+						casualtyBattalion = &m_DefenderCommander->PeekUnit(casualtyIndex);
 						attacker->Attack(*casualtyBattalion);
 
 						if (!TryKillingBattalion(casualtyBattalion, m_DefenderCommander, casualtyIndex))
@@ -574,7 +576,7 @@ void Battlefield::FindBFS(Creature* warrior, COORD targetPosition, COORD fromPos
 		return;
 	// top-right
 	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition,
-		currentDistance, minDistance, CenterRatio, static_cast<int>(MoveableFieldOffset) * -1), canTraceCollisions)
+		currentDistance, minDistance, CenterRatio, static_cast<int>(MoveableFieldOffset) * -1, canTraceCollisions))
 		return;
 		
 	// right
@@ -599,7 +601,7 @@ void Battlefield::FindBFS(Creature* warrior, COORD targetPosition, COORD fromPos
 		return;
 	// top-left
 	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition,
-		currentDistance, minDistance, static_cast<int>(CenterRatio) * -1, static_cast<int>(MoveableFieldOffset) * -1), canTraceCollisions)
+		currentDistance, minDistance, static_cast<int>(CenterRatio) * -1, static_cast<int>(MoveableFieldOffset) * -1, canTraceCollisions))
 		return;
 
 	// add the new route

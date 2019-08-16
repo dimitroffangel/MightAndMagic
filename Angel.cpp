@@ -18,6 +18,7 @@ Angel::Angel() : Creature("Angel")
 	m_Stealth = startingValuesStealth;
 	m_MovementOnBattlefield = startingValuesMovementOnBattlefield;
 
+	m_IsRange = false;
 	m_IsDead = false;
 }
 
