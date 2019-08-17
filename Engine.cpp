@@ -345,7 +345,7 @@ void Engine::WaitForKeyPress(CurrentTime& start)
 
 	}
 
-	if ((GetKeyState('R') & 0x8000) && isInBattle)
+	if ((GetKeyState('R') & 0x8000) && isInBattle && CanPlayerPressKey(start))
 		AfterBattleLogic();
 
 	return;
