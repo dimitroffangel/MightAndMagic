@@ -471,9 +471,7 @@ void Engine::AfterBattleLogic()
 
 	// now redraw the map
 	isInBattle = false;
-	//WipeMap();
-
-	//m_Battle->DrawBattlefield();
+	
 	m_Battle->ClearBattlefield();
 	m_Battle.reset();
 
@@ -488,11 +486,6 @@ void Engine::AfterBattleLogic()
 	DrawingObject::DrawMap(*m_CurrentMap);
 
 	ClearAllMessages();
-
-	/*
-		1) instantiate a new battlefield, there everything will be drawn
-		2) set isInBattle to true
-	*/
 }
 
 void Engine::TakeRandomCreatureFromArmy(Hero & heroArmy)
