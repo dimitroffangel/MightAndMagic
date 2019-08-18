@@ -491,17 +491,18 @@ void Engine::AfterBattleLogic()
 void Engine::TakeRandomCreatureFromArmy(Hero & heroArmy)
 {
 	// TODO
+	size_t battalionIndex = -1;
 
-	unsigned armySize = heroArmy.GetNumberOfSoldiers();
+	while (battalionIndex < 0 || battalionIndex >= heroArmy.GetNumberOfBattalions() 
+		|| heroArmy.GetNumberOfSoldiersInBattalion(battalionIndex) == 0)
+		battalionIndex = GenerateRandomNumber(8);
+
+	unsigned armySize = heroArmy.GetNumberOfSoldiersInBattalion(battalionIndex);
 
 	size_t soldierIndexToDie = GenerateRandomNumber(armySize);
 
-	size_t battalionIndex = -1;
 
-	while (battalionIndex < 0 || battalionIndex >= heroArmy.GetNumberOfBattalions())
-		battalionIndex = GenerateRandomNumber(8);
-
-	heroArmy.RemoveUnit(soldierIndexToDie, battalionIndex);
+	heroArmy.RemoveUnit(battalionIndex, soldierIndexToDie);
 }
 
 int Engine::GenerateRandomNumber(int n) const
