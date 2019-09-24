@@ -49,13 +49,13 @@ void Engine::ClearAllMessages()
 void Engine::ClearTimesUpMessages()
 {
 	CurrentTime now = std::chrono::system_clock().now();
-	std::chrono::duration<float> diff;
+	std::chrono::duration<float> diffTime;
 
 	for (std::vector<Message>::iterator it = m_Messages.begin(); it != m_Messages.end(); it++)
 	{
-		diff = now - it->GetStartingTime();
+		diffTime = now - it->GetStartingTime();
 
-		if (diff.count() > 5) // delete the message if so
+		if (diffTime.count() > 5) // delete the message if so
 		{
 			size_t sizeString = std::strlen(it->GetAlert());
 			
@@ -63,6 +63,7 @@ void Engine::ClearTimesUpMessages()
 
 			for (size_t i = 0; i < sizeString; i++)
 				blankString.get()[i] = ' ';
+
 			blankString.get()[sizeString] = '\0';
 
 			DrawingObject::DrawObject(DrawingObject::HConsole, blankString.get(), it->GetPosition(), 0);

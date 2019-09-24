@@ -268,8 +268,14 @@ void Battlefield::MakeBotTurn()
 			size_t roadSize = attacker->GetRoadLength();
 
 			if (roadSize == 0)
+			{
+				// check to see if the target is neigbouring the attacker
+				if (IsNeighbour(attacker->GetPosition(), attacker->GetBattleTarget()->GetPosition()))
+					return;
+
 				continue;
 
+			}
 			// move the attacker now
 			if (attacker->GetMovementLefts() >= roadSize)
 			{
@@ -564,6 +570,11 @@ bool Battlefield::TryMovingOn(COORD fromPosition, COORD targetPosition, COORD& c
 	return false;
 }
 
+bool Battlefield::IsNeighbour(COORD positionA, COORD positionB) const
+{
+	if((positionA.X == positionB.X && positionA.Y -1 == positionB.Y) || )
+}
+
 void Battlefield::FindBFS(Creature* warrior, COORD targetPosition, COORD fromPosition, bool canTraceCollisions)
 {
 	float currentDistance = 100000001;
@@ -583,7 +594,7 @@ void Battlefield::FindBFS(Creature* warrior, COORD targetPosition, COORD fromPos
 	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition, currentDistance,
 		minDistance, CenterRatio, 0, canTraceCollisions))
 		return;
-	// bot-right
+	// bot-right|
 	if (TryMovingOn(fromPosition, targetPosition, currentDirection, nearestPosition,
 		currentDistance, minDistance, CenterRatio, MoveableFieldOffset, canTraceCollisions))
 		return;

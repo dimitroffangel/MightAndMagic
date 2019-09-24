@@ -29,6 +29,7 @@ private:
 	bool TryKillingBattalion(Creature* &creature, Hero* owner, size_t battalionIndex);
 	void TryMovingCreature(Hero*, Hero* defenderHero, size_t commanderOneBattalionIndex, size_t commanderTwoBattalionIndex);
 	bool TryMovingOn(COORD, COORD, COORD&, COORD&, float&, float&, int, int, bool = true) const;
+	bool IsNeighbour(COORD, COORD) const;
 	void FindBFS(Creature*, COORD, COORD, bool = true);
 	void UpdateBattalionAfterFight(Creature* creature, Hero* owner, size_t battalionIndex);
 	void TryEndingBattle();
