@@ -572,7 +572,13 @@ bool Battlefield::TryMovingOn(COORD fromPosition, COORD targetPosition, COORD& c
 
 bool Battlefield::IsNeighbour(COORD positionA, COORD positionB) const
 {
-	if((positionA.X == positionB.X && positionA.Y -1 == positionB.Y) || )
+	if ((positionA.X == positionB.X && positionA.Y - 1 == positionB.Y) ||
+		positionA.X == positionB.X + 1 && positionA.Y == positionB.Y ||
+		positionA.X == positionB.X - 1 && positionA.Y == positionB.Y ||
+		positionA.X == positionB.X && positionA.Y == positionB.Y + 1)
+		return true;
+
+	return false;
 }
 
 void Battlefield::FindBFS(Creature* warrior, COORD targetPosition, COORD fromPosition, bool canTraceCollisions)
